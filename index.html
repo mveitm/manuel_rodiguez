@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mr.Veit - Equilibria Pro 3.0</title>
+    <title>Mr.Veit - Equilibria Rastro</title>
     <style>
         :root {
             --bg-warm: #fffdfa;
@@ -12,91 +12,56 @@
             --mrveit: #d97706;
             --accent: #f59e0b;
             --success: #059669;
-            --action-blue: #3b82f6;
+            --trace: #e2e8f0;
         }
 
-        body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: var(--bg-warm);
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-            color: var(--text-dark);
-        }
-
-        #app {
-            background: var(--paper);
-            width: 95%;
-            max-width: 600px;
-            margin: 20px;
-            border-radius: 20px;
-            box-shadow: 0 10px 25px rgba(69, 26, 3, 0.1);
-            padding: 25px;
-            border: 4px solid var(--mrveit);
-        }
-
-        .logo { font-size: 2.2rem; font-weight: 900; color: var(--mrveit); text-align: center; margin-bottom: 5px; }
+        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-warm); margin: 0; display: flex; justify-content: center; min-height: 100vh; color: var(--text-dark); }
+        #app { background: var(--paper); width: 95%; max-width: 650px; margin: 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); padding: 25px; border: 4px solid var(--mrveit); }
+        .logo { font-size: 2.2rem; font-weight: 900; color: var(--mrveit); text-align: center; }
         .screen { display: none; }
         .active { display: block; }
-        .story-box { background: #fffbeb; border-left: 5px solid var(--accent); padding: 15px; border-radius: 8px; margin: 15px 0; font-size: 1.1rem; }
-        .instruction { text-align: center; font-weight: bold; color: var(--mrveit); margin-bottom: 10px; min-height: 1.2em; }
         
-        .board {
+        /* HISTORIAL DE PASOS */
+        .history-container {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin: 20px 0;
+            padding: 10px;
+            background: #fdfbf7;
+            border-radius: 15px;
+            min-height: 200px;
+            border: 1px solid #eee;
+        }
+
+        .step-row {
             display: flex;
             justify-content: center;
             align-items: center;
             gap: 15px;
-            height: 160px;
-            font-size: 2.5rem;
-            background: #fffcf0;
-            border-radius: 15px;
-            margin: 20px 0;
+            font-size: 1.8rem;
+            padding: 10px;
+            border-bottom: 2px dashed var(--trace);
+            animation: fadeIn 0.5s ease;
         }
 
-        .fraction {
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-            vertical-align: middle;
-            font-size: 2rem;
-        }
-        .fraction span { padding: 2px 10px; }
-        .fraction .num { border-bottom: 3px solid var(--text-dark); }
+        .step-row.current { border-bottom: none; background: #fffbeb; border-radius: 10px; border: 2px solid var(--accent); }
+        .step-row.old { opacity: 0.6; font-size: 1.4rem; color: #64748b; }
 
-        .draggable {
-            background: var(--accent);
-            color: white;
-            padding: 8px 15px;
-            border-radius: 10px;
-            cursor: grab;
-            box-shadow: 0 4px 0 #b45309;
-        }
+        .fraction { display: inline-flex; flex-direction: column; align-items: center; font-size: 1.5rem; }
+        .num { border-bottom: 2px solid var(--text-dark); padding: 0 5px; }
 
-        .drop-zone {
-            width: 90px;
-            height: 90px;
-            border: 3px dashed #d6d3d1;
-            border-radius: 10px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            background: #fafaf9;
-        }
-
-        .btn-op {
-            background: #ef4444;
-            color: white;
-            border-radius: 10px;
-            padding: 5px 15px;
-            cursor: pointer;
-            box-shadow: 0 3px 0 #991b1b;
-        }
-
-        button { width: 100%; padding: 16px; background: var(--mrveit); color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .next-btn { background: var(--action-blue); }
+        .draggable { background: var(--accent); color: white; padding: 5px 12px; border-radius: 8px; cursor: grab; }
+        .drop-zone { width: 60px; height: 60px; border: 2px dashed #cbd5e1; border-radius: 8px; display: flex; justify-content: center; align-items: center; background: #f8fafc; }
+        
+        .btn-op { background: #ef4444; color: white; padding: 4px 12px; border-radius: 8px; cursor: pointer; font-size: 1.2rem; }
+        
+        .story-box { background: #fffbeb; border-left: 5px solid var(--accent); padding: 15px; border-radius: 8px; margin-bottom: 10px; }
+        button { width: 100%; padding: 16px; background: var(--mrveit); color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #ccc; }
+        
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .hidden { display: none; }
-        input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 2px solid #d6d3d1; font-size: 1rem; box-sizing: border-box; }
     </style>
 </head>
 <body>
@@ -105,30 +70,32 @@
     <div class="logo">Mr.Veit</div>
 
     <div id="scr-start" class="screen active">
-        <h3 style="text-align:center">¡Hola! Vamos a jugar con Ecuaciones</h3>
+        <h3 style="text-align:center">¡Bienvenido a Equilibria!</h3>
         <input type="text" id="nombre" placeholder="Nombre">
-        <input type="text" id="apellido" placeholder="Apellido">
-        <input type="text" id="curso" placeholder="Curso (ej: 7mo Básico)">
-        <button onclick="iniciar()">Empezar Aventura</button>
+        <input type="text" id="curso" placeholder="Curso">
+        <button onclick="iniciar()">Comenzar</button>
     </div>
 
     <div id="scr-learn" class="screen">
         <div class="story-box" id="learn-story"></div>
-        <div class="instruction" id="learn-instr"></div>
-        <div class="board" id="learn-board"></div>
-        <button id="btn-next-lvl" class="next-btn hidden" onclick="avanzarNivel()">Siguiente Ejercicio →</button>
+        <p id="learn-instr" style="text-align:center; font-weight:bold; color:var(--mrveit)"></p>
+        
+        <div class="history-container" id="history-box">
+            </div>
+
+        <button id="btn-next-lvl" class="hidden" style="background:#3b82f6" onclick="avanzarNivel()">Siguiente Ejercicio →</button>
     </div>
 
     <div id="scr-quiz" class="screen">
-        <h3>🎯 Tu Turno (En el Cuaderno)</h3>
+        <h3>🎯 Desafío de Cuaderno</h3>
         <div id="quiz-list"></div>
-        <button onclick="evaluarQuiz()">Terminar y calificar</button>
+        <button onclick="evaluarQuiz()">Calificar</button>
     </div>
 
     <div id="scr-results" class="screen" style="text-align:center">
         <h2 id="res-title"></h2>
-        <div id="res-score" style="font-size: 3rem; font-weight: bold; margin: 20px 0;"></div>
-        <button style="background:#16a34a" onclick="enviarWA()">Enviar reporte a Mr.Veit</button>
+        <div id="res-score" style="font-size: 3rem; margin: 20px 0;"></div>
+        <button style="background:#16a34a" onclick="enviarWA()">Enviar a Mr.Veit</button>
         <button onclick="location.reload()">Reiniciar</button>
     </div>
 </div>
@@ -136,27 +103,25 @@
 <script>
     let userData = {};
     let curLvl = 0;
-    let step = 1;
     let currentData = {};
 
     function genData(lvl) {
-        let x = Math.floor(Math.random() * 6) + 2; 
+        let x = Math.floor(Math.random() * 5) + 2; 
         let a = Math.floor(Math.random() * 3) + 2; 
-        let b = Math.floor(Math.random() * 10) + 2; 
-        
+        let b = Math.floor(Math.random() * 8) + 2; 
         switch(lvl) {
-            case 0: return { s: `Tenías x dulces, compraste ${b} más y ahora tienes ${x+b}. ¿Cuántos dulces tenías al principio?`, l:'x', op:'+', r:b, target:x+b, inv:'-', res:x, type: 'simple' };
-            case 1: return { s: `En un bus viajan x personas. Bajan ${b} y quedan ${x}. ¿Cuántas personas había en el bus?`, l:'x', op:'-', r:b, target:x, inv:'+', res:x+b, type: 'simple' };
-            case 2: return { s: `Tienes ${a} cajas iguales con x lápices cada una. En total hay ${a*x}. ¿Cuántos lápices trae cada caja?`, l:a, op:'·', r:'x', target:a*x, inv:'÷', res:x, type: 'div' };
-            case 3: return { s: `Si repartes tus x láminas entre ${a} amigos, cada uno recibe ${x}. ¿Cuántas láminas tenías?`, l:'x', op:'/', r:a, target:x, inv:'·', res:a*x, type: 'simple' };
-            case 4: return { s: `El doble de un número (${a}x) más ${b} da como resultado ${a*x+b}. ¿Cuál es el valor del número x?`, l:a+'x', op:'+', r:b, target:a*x+b, inv:'-', res:x, x_val: x, a_val: a, type: 'complejo' };
+            case 0: return { s: `Tenías x cartas, te dieron ${b} más. Ahora tienes ${x+b}. ¿Cuántas tenías?`, l:'x', op:'+', r:b, target:x+b, inv:'-', res:x, type:'simple' };
+            case 1: return { s: `Había x aves, volaron ${b} y quedaron ${x}. ¿Cuántas aves había?`, l:'x', op:'-', r:b, target:x, inv:'+', res:x+b, type:'simple' };
+            case 2: return { s: `Hay ${a} grupos iguales con x niños. Total: ${a*x}. ¿Cuántos niños por grupo?`, l:a, op:'·', r:'x', target:a*x, inv:'÷', res:x, type:'div' };
+            case 3: return { s: `El doble de un número (${a}x) más ${b} es ${a*x+b}. ¿Cuál es el número?`, l:a+'x', op:'+', r:b, target:a*x+b, inv:'-', res:x, x_val:x, a_val:a, type:'complejo' };
+            case 4: return { s: `Repartes x dulces entre ${a} amigos y sobran ${x}. ¿Cuántos dulces tenías?`, l:'x', op:'÷', r:a, target:x, inv:'·', res:a*x, type:'simple' };
         }
     }
 
     function iniciar() {
         userData.n = document.getElementById('nombre').value;
         userData.c = document.getElementById('curso').value;
-        if(!userData.n || !userData.c) return alert("Por favor completa tus datos");
+        if(!userData.n) return alert("Escribe tu nombre");
         curLvl = 0;
         showScreen('scr-learn');
         loadLearn();
@@ -169,105 +134,105 @@
 
     function loadLearn() {
         currentData = genData(curLvl);
-        step = 1;
         document.getElementById('btn-next-lvl').classList.add('hidden');
         document.getElementById('learn-story').innerText = currentData.s;
+        document.getElementById('history-box').innerHTML = ""; // Limpiar rastro
         
-        const board = document.getElementById('learn-board');
-        
+        // PRIMER PASO: Mostrar ecuación original
+        const row = document.createElement('div');
+        row.className = "step-row current";
+        row.id = "active-row";
+
         if(currentData.type === 'complejo') {
-            document.getElementById('learn-instr').innerText = `Paso 1: Arrastra el +${currentData.r} al otro lado.`;
-            board.innerHTML = `
-                <div>${currentData.a_val}x</div><div>+</div>
-                <div id="drag-item" class="draggable" draggable="true" ondragstart="drag(event)">${currentData.r}</div>
-                <div>=</div><div>${currentData.target}</div>
-                <div class="drop-zone" ondrop="dropComplejo(event)" ondragover="allow(event)">?</div>
-            `;
+            document.getElementById('learn-instr').innerText = `Paso 1: Arrastra el +${currentData.r}`;
+            row.innerHTML = `<div>${currentData.a_val}x</div><div>+</div><div id="drag-item" class="draggable" draggable="true" ondragstart="drag(event)">${currentData.r}</div><div>=</div><div>${currentData.target}</div><div class="drop-zone" ondrop="dropComplejo(event)" ondragover="allow(event)">?</div>`;
         } else if(currentData.type === 'div') {
-            document.getElementById('learn-instr').innerText = `Paso 1: Arrastra el ${currentData.l} para dividir.`;
-            board.innerHTML = `
-                <div id="drag-item" class="draggable" draggable="true" ondragstart="drag(event)">${currentData.l}</div>
-                <div>·</div><div>x</div><div>=</div><div>${currentData.target}</div>
-                <div class="drop-zone" ondrop="dropDiv(event)" ondragover="allow(event)">?</div>
-            `;
+            document.getElementById('learn-instr').innerText = `Paso 1: Arrastra el ${currentData.l}`;
+            row.innerHTML = `<div id="drag-item" class="draggable" draggable="true" ondragstart="drag(event)">${currentData.l}</div><div>·</div><div>x</div><div>=</div><div>${currentData.target}</div><div class="drop-zone" ondrop="dropDiv(event)" ondragover="allow(event)">?</div>`;
         } else {
-            document.getElementById('learn-instr').innerText = `Paso 1: Arrastra el ${currentData.r} al otro lado.`;
-            board.innerHTML = `
-                <div>x</div><div>${currentData.op}</div>
-                <div id="drag-item" class="draggable" draggable="true" ondragstart="drag(event)">${currentData.r}</div>
-                <div>=</div><div>${currentData.target}</div>
-                <div class="drop-zone" ondrop="dropSimple(event)" ondragover="allow(event)">?</div>
-            `;
+            document.getElementById('learn-instr').innerText = `Paso 1: Arrastra el ${currentData.r}`;
+            row.innerHTML = `<div>x</div><div>${currentData.op}</div><div id="drag-item" class="draggable" draggable="true" ondragstart="drag(event)">${currentData.r}</div><div>=</div><div>${currentData.target}</div><div class="drop-zone" ondrop="dropSimple(event)" ondragover="allow(event)">?</div>`;
         }
+        document.getElementById('history-box').appendChild(row);
     }
 
     function drag(e) { e.dataTransfer.setData("text", e.target.id); }
     function allow(e) { e.preventDefault(); }
 
-    // Lógica para x + b = c
+    function fixStep() {
+        const oldRow = document.getElementById('active-row');
+        oldRow.id = "";
+        oldRow.className = "step-row old";
+        // Eliminar elementos interactivos del paso viejo
+        oldRow.querySelectorAll('.drop-zone, .draggable').forEach(el => el.style.display = 'none');
+    }
+
+    // --- LOGICA SIMPLE ---
     function dropSimple(e) {
         e.preventDefault();
-        const board = document.getElementById('learn-board');
-        board.innerHTML = `<div>x</div><div>=</div><div>${currentData.target}</div><div class="btn-op" onclick="resolverSimple()">${currentData.inv}</div><div>${currentData.r}</div>`;
-        document.getElementById('learn-instr').innerText = `Paso 2: Toca el signo "${currentData.inv}" para calcular.`;
+        fixStep();
+        const row = document.createElement('div');
+        row.className = "step-row current";
+        row.id = "active-row";
+        row.innerHTML = `<div>x</div><div>=</div><div>${currentData.target}</div><div class="btn-op" onclick="resolverSimple()">${currentData.inv}</div><div>${currentData.r}</div>`;
+        document.getElementById('history-box').appendChild(row);
+        document.getElementById('learn-instr').innerText = "Paso 2: Calcula el resultado.";
     }
 
     function resolverSimple() {
-        document.getElementById('learn-board').innerHTML = `<div>x</div><div>=</div><div style="color:var(--success)">${currentData.res}</div>`;
-        document.getElementById('learn-instr').innerText = "¡Excelente! Has encontrado x.";
+        fixStep();
+        const row = document.createElement('div');
+        row.className = "step-row current";
+        row.innerHTML = `<div>x</div><div>=</div><div style="color:var(--success)">${currentData.res}</div>`;
+        document.getElementById('history-box').appendChild(row);
+        document.getElementById('learn-instr').innerText = "¡Misión cumplida! Mira el rastro antes de seguir.";
         document.getElementById('btn-next-lvl').classList.remove('hidden');
     }
 
-    // Lógica para ax = b
+    // --- LOGICA DIVISIÓN ---
     function dropDiv(e) {
         e.preventDefault();
-        const board = document.getElementById('learn-board');
-        board.innerHTML = `
-            <div>x</div><div>=</div>
-            <div class="fraction">
-                <span class="num">${currentData.target}</span>
-                <span>${currentData.l}</span>
-            </div>
-            <div class="btn-op" onclick="resolverSimple()">÷</div>
-        `;
-        document.getElementById('learn-instr').innerText = "Paso 2: Toca el signo de dividir.";
+        fixStep();
+        const row = document.createElement('div');
+        row.className = "step-row current";
+        row.id = "active-row";
+        row.innerHTML = `<div>x</div><div>=</div><div class="fraction"><span class="num">${currentData.target}</span><span>${currentData.l}</span></div><div class="btn-op" onclick="resolverSimple()">÷</div>`;
+        document.getElementById('history-box').appendChild(row);
+        document.getElementById('learn-instr').innerText = "Paso 2: Haz click para dividir.";
     }
 
-    // Lógica para ax + b = c
+    // --- LOGICA COMPLEJA (2 PASOS) ---
     function dropComplejo(e) {
         e.preventDefault();
-        const board = document.getElementById('learn-board');
-        let tempRes = currentData.target - currentData.r;
-        board.innerHTML = `
-            <div>${currentData.a_val}x</div><div>=</div><div>${currentData.target}</div><div class="btn-op" onclick="resolverComplejo1()">${currentData.inv}</div><div>${currentData.r}</div>
-        `;
-        document.getElementById('learn-instr').innerText = "Paso 2: Resuelve la resta.";
+        fixStep();
+        const row = document.createElement('div');
+        row.className = "step-row current";
+        row.id = "active-row";
+        row.innerHTML = `<div>${currentData.a_val}x</div><div>=</div><div>${currentData.target}</div><div class="btn-op" onclick="resolverComplejo1()">${currentData.inv}</div><div>${currentData.r}</div>`;
+        document.getElementById('history-box').appendChild(row);
+        document.getElementById('learn-instr').innerText = "Paso 2: Resta los números.";
     }
 
     function resolverComplejo1() {
         let tempRes = currentData.target - currentData.r;
-        const board = document.getElementById('learn-board');
-        board.innerHTML = `
-            <div id="drag-coef" class="draggable" draggable="true" ondragstart="drag(event)">${currentData.a_val}</div>
-            <div>x</div><div>=</div><div>${tempRes}</div>
-            <div class="drop-zone" ondrop="dropComplejoFinal(event)" ondragover="allow(event)">?</div>
-        `;
-        document.getElementById('learn-instr').innerText = `Paso 3: Ahora arrastra el ${currentData.a_val} para dejar sola a la x.`;
+        fixStep();
+        const row = document.createElement('div');
+        row.className = "step-row current";
+        row.id = "active-row";
+        row.innerHTML = `<div id="drag-coef" class="draggable" draggable="true" ondragstart="drag(event)">${currentData.a_val}</div><div>x</div><div>=</div><div>${tempRes}</div><div class="drop-zone" ondrop="dropDivFinal(event, ${tempRes})" ondragover="allow(event)">?</div>`;
+        document.getElementById('history-box').appendChild(row);
+        document.getElementById('learn-instr').innerText = "Paso 3: Arrastra para despejar x.";
     }
 
-    function dropComplejoFinal(e) {
+    function dropDivFinal(e, tempRes) {
         e.preventDefault();
-        let tempRes = currentData.target - currentData.r;
-        const board = document.getElementById('learn-board');
-        board.innerHTML = `
-            <div>x</div><div>=</div>
-            <div class="fraction">
-                <span class="num">${tempRes}</span>
-                <span>${currentData.a_val}</span>
-            </div>
-            <div class="btn-op" onclick="resolverSimple()">÷</div>
-        `;
-        document.getElementById('learn-instr').innerText = "Paso 4: Toca para dividir y terminar.";
+        fixStep();
+        const row = document.createElement('div');
+        row.className = "step-row current";
+        row.id = "active-row";
+        row.innerHTML = `<div>x</div><div>=</div><div class="fraction"><span class="num">${tempRes}</span><span>${currentData.a_val}</span></div><div class="btn-op" onclick="resolverSimple()">÷</div>`;
+        document.getElementById('history-box').appendChild(row);
+        document.getElementById('learn-instr').innerText = "Paso 4: Divide para el final.";
     }
 
     function avanzarNivel() {
@@ -281,7 +246,7 @@
         list.innerHTML = ""; window.quizActual = [];
         for(let i=0; i<5; i++) {
             let d = genData(i); window.quizActual.push(d);
-            list.innerHTML += `<div class="story-box" style="background:white">${d.s}<br><b>Ecuación:</b> ${d.l} ${d.op} ${d.r} = ${d.target}<br><input type="number" id="q-${i}" placeholder="x = ?"></div>`;
+            list.innerHTML += `<div class="story-box" style="background:white; border:1px solid #ddd">${d.s}<br><b>Ecuación:</b> ${d.l} ${d.op} ${d.r} = ${d.target}<br><input type="number" id="q-${i}" placeholder="x = ?"></div>`;
         }
     }
 
@@ -290,12 +255,12 @@
         window.quizActual.forEach((d, i) => { if(parseInt(document.getElementById(`q-${i}`).value) === d.res) nota++; });
         userData.nota = nota;
         document.getElementById('res-score').innerText = nota + " / 5";
-        document.getElementById('res-title').innerText = nota >= 4 ? "¡Excelente! 🌟" : "¡Sigue practicando! 💪";
+        document.getElementById('res-title').innerText = nota >= 4 ? "¡Eres un maestro! 🌟" : "¡Buen intento! 💪";
         showScreen('scr-results');
     }
 
     function enviarWA() {
-        const msg = `*REPORTE MR. VEIT*\nEstudiante: ${userData.n}\nCurso: ${userData.c}\nResultado: ${userData.nota}/5`;
+        const msg = `*REPORTE MR. VEIT*\nEstudiante: ${userData.n}\nNota: ${userData.nota}/5`;
         window.open(`https://wa.me/56961410052?text=${encodeURIComponent(msg)}`);
     }
 </script>
