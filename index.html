@@ -3,233 +3,320 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Equilibria: Paso a Paso</title>
+    <title>Mr.Veit - Equilibria Pro</title>
     <style>
         :root {
-            --paper: #ffffff;
-            --ink: #2d3748;
-            --highlight: #ecc94b;
-            --action: #4299e1;
-            --success: #48bb78;
+            --paper: #fdfdfd;
+            --ink: #1e293b;
+            --mrveit: #2563eb;
+            --accent: #f59e0b;
+            --success: #10b981;
+            --grid: #e2e8f0;
         }
 
         body {
-            font-family: 'Segoe UI', sans-serif;
-            background-color: #edf2f7;
+            font-family: 'Comic Sans MS', 'Segoe UI', sans-serif;
+            background-color: var(--grid);
+            background-image: radial-gradient(circle, #cbd5e1 1px, transparent 1px);
+            background-size: 30px 30px;
+            margin: 0;
             display: flex;
             justify-content: center;
-            padding: 20px;
-            touch-action: manipulation;
+            min-height: 100vh;
+            color: var(--ink);
         }
 
-        #app-container {
+        #app {
             background: var(--paper);
-            width: 100%;
-            max-width: 500px;
+            width: 95%;
+            max-width: 650px;
+            margin: 20px;
             border-radius: 15px;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
             padding: 25px;
-            text-align: center;
-            border: 2px solid #cbd5e0;
+            border: 3px solid var(--mrveit);
+            display: flex;
+            flex-direction: column;
         }
 
-        .instruction-box {
-            background: #fffaf0;
-            border: 1px solid #feebc8;
+        .logo {
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: var(--mrveit);
+            text-align: center;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px #bfdbfe;
+        }
+
+        .screen { display: none; }
+        .active { display: block; }
+
+        .story-box {
+            background: #fffbeb;
+            border: 2px solid #fef3c7;
             padding: 15px;
             border-radius: 10px;
-            margin-bottom: 30px;
-            min-height: 60px;
-            font-weight: 500;
-            color: #744210;
+            margin: 15px 0;
+            font-size: 1.1rem;
+            line-height: 1.4;
         }
 
-        .equation-row {
+        .board {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
+            height: 120px;
             font-size: 2.5rem;
-            font-weight: bold;
-            margin: 40px 0;
-            min-height: 80px;
+            background: #f8fafc;
+            border-radius: 12px;
+            margin: 20px 0;
         }
 
-        .term {
-            padding: 10px 15px;
+        .draggable {
+            background: var(--accent);
+            color: white;
+            padding: 5px 15px;
             border-radius: 8px;
-            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            cursor: default;
+            cursor: grab;
+            transition: transform 0.2s;
         }
 
-        .interactive {
-            background: var(--highlight);
+        .drop-zone {
+            width: 80px;
+            height: 80px;
+            border: 3px dashed #94a3b8;
+            border-radius: 10px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: #f1f5f9;
+        }
+
+        .btn-op {
+            background: #ef4444;
+            color: white;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
             cursor: pointer;
-            box-shadow: 0 0 15px var(--highlight);
-            animation: pulse 1.5s infinite;
+            font-size: 1.5rem;
         }
 
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-            100% { transform: scale(1); }
+        .quiz-card {
+            background: white;
+            border: 2px solid var(--grid);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
         }
 
-        .hidden { display: none; }
-
-        input {
+        input[type="number"], input[type="text"] {
             width: 100%;
             padding: 12px;
             margin: 8px 0;
             border-radius: 8px;
-            border: 1px solid #cbd5e0;
+            border: 2px solid #cbd5e1;
             font-size: 1rem;
         }
 
         button {
-            background: var(--action);
+            width: 100%;
+            padding: 15px;
+            background: var(--mrveit);
             color: white;
             border: none;
-            padding: 15px 30px;
             border-radius: 10px;
             font-size: 1.2rem;
+            font-weight: bold;
             cursor: pointer;
-            width: 100%;
+            margin-top: 10px;
         }
 
-        .wa-btn { background: #25D366; margin-top: 20px; }
+        .wa-btn { background: #22c55e; }
+        .retry-btn { background: #64748b; }
+
+        .feedback {
+            font-size: 1.3rem;
+            color: var(--mrveit);
+            text-align: center;
+            font-weight: bold;
+            margin: 20px 0;
+        }
     </style>
 </head>
 <body>
 
-<div id="app-container">
-    <div id="setup">
-        <h2>Bienvenido a Equilibria</h2>
-        <p>Introduce tus datos para comenzar:</p>
-        <input type="text" id="nombre" placeholder="Nombre">
-        <input type="text" id="apellido" placeholder="Apellido">
-        <input type="text" id="curso" placeholder="Curso">
-        <button onclick="iniciar()">Empezar Misión</button>
+<div id="app">
+    <div class="logo">Mr.Veit</div>
+
+    <div id="scr-start" class="screen active">
+        <h3 style="text-align:center">¡Bienvenido a Equilibria!</h3>
+        <p>Aprende a resolver ecuaciones con historias y juegos.</p>
+        <input type="text" id="nombre" placeholder="Tu Nombre">
+        <input type="text" id="apellido" placeholder="Tu Apellido">
+        <input type="text" id="curso" placeholder="Tu Curso">
+        <button onclick="nav('scr-learn')">¡Empezar a Aprender!</button>
     </div>
 
-    <div id="game" class="hidden">
-        <div class="instruction-box" id="instruction">
-            ¡Hola! Vamos a despejar la X. Haz clic en el número que acompaña a la X.
-        </div>
-
-        <div class="equation-row" id="board">
-            </div>
-
-        <div id="controls"></div>
+    <div id="scr-learn" class="screen">
+        <div class="story-box" id="learn-story"></div>
+        <div id="learn-instr" style="text-align:center; font-weight:bold; color:var(--mrveit)"></div>
+        <div class="board" id="learn-board"></div>
+        <button id="btn-next-learn" class="hidden" onclick="nextLearnLevel()">Siguiente Historia</button>
     </div>
 
-    <div id="results" class="hidden">
-        <h2>¡Excelente Trabajo!</h2>
-        <p>Has completado todos los pasos con éxito.</p>
-        <button class="wa-btn" onclick="enviarReporte()">Enviar progreso por WhatsApp</button>
+    <div id="scr-quiz" class="screen">
+        <h3>🎯 Desafío Final</h3>
+        <p>Resuelve estos ejercicios en tu cuaderno e ingresa los resultados aquí:</p>
+        <div id="quiz-container"></div>
+        <button onclick="evaluarQuiz()">Ver mis resultados</button>
+    </div>
+
+    <div id="scr-results" class="screen">
+        <div id="feedback-msg" class="feedback"></div>
+        <div id="score-display" style="text-align:center; font-size: 2rem; margin-bottom: 20px;"></div>
+        <button class="wa-btn" onclick="enviarReporte()">Enviar a Mr.Veit (WhatsApp)</button>
+        <button class="retry-btn" onclick="reiniciarTodo()">Intentar con nuevos números</button>
     </div>
 </div>
 
 <script>
-    const levels = [
-        { id: 1, t1: 'x', op: '+', t2: '12', res: '30', final: 18, type: 'suma' },
-        { id: 2, t1: 'x', op: '-', t2: '8', res: '20', final: 28, type: 'resta' },
-        { id: 3, t1: '3', op: '*', t2: 'x', res: '21', final: 7, type: 'mult' },
-        { id: 4, t1: 'x', op: '/', t2: '4', res: '5', final: 20, type: 'div' },
-        { id: 5, t1: '2x', op: '+', t2: '6', res: '16', final: 5, type: 'mixta' }
+    // Configuración de niveles de aprendizaje (historias fijas)
+    const learnLevels = [
+        { s: "Ana tiene x dulces. Su tío le regala 15 más y ahora tiene 40. ¿Cuántos tenía?", l: "x", op: "+", r: "15", target: "40", inv: "-", res: 25 },
+        { s: "Un avión tiene x asientos. Se bajan 20 pasajeros y quedan 100. ¿Cuántos asientos hay?", l: "x", op: "-", r: "20", target: "100", inv: "+", res: 120 }
     ];
 
-    let currentLvl = 0;
-    let step = 0;
+    let curLearn = 0;
+    let learnStep = 1;
+    let quizData = [];
     let userData = {};
 
-    function iniciar() {
-        userData.nombre = document.getElementById('nombre').value;
-        userData.apellido = document.getElementById('apellido').value;
-        userData.curso = document.getElementById('curso').value;
-        if(!userData.nombre) return alert("Escribe tu nombre");
+    function nav(id) {
+        if(id === 'scr-learn') {
+            userData.n = document.getElementById('nombre').value;
+            userData.a = document.getElementById('apellido').value;
+            userData.c = document.getElementById('curso').value;
+            if(!userData.n) return alert("Escribe tu nombre");
+            loadLearn();
+        }
+        if(id === 'scr-quiz') generateQuiz();
         
-        document.getElementById('setup').classList.add('hidden');
-        document.getElementById('game').classList.remove('hidden');
-        renderLevel();
+        document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
     }
 
-    function renderLevel() {
-        const lvl = levels[currentLvl];
-        const board = document.getElementById('board');
-        step = 1;
+    // --- LÓGICA APRENDIZAJE ---
+    function loadLearn() {
+        const lv = learnLevels[curLearn];
+        learnStep = 1;
+        document.getElementById('learn-story').innerText = lv.s;
+        document.getElementById('learn-instr').innerText = `Arrastra el ${lv.op}${lv.r} al otro lado.`;
         
+        const board = document.getElementById('learn-board');
         board.innerHTML = `
-            <div id="term-left" class="term">${lvl.t1}</div>
-            <div id="op" class="term">${lvl.op}</div>
-            <div id="term-move" class="term interactive" onclick="handleStep()">${lvl.t2}</div>
-            <div class="term">=</div>
-            <div id="result" class="term">${lvl.res}</div>
+            <div>x</div><div>${lv.op}</div>
+            <div id="drag-item" class="draggable" draggable="true" ondragstart="evDrag(event)">${lv.r}</div>
+            <div>=</div><div>${lv.target}</div>
+            <div class="drop-zone" ondrop="evDrop(event)" ondragover="evAllow(event)">?</div>
         `;
-        document.getElementById('instruction').innerText = `Paso 1: Para dejar sola a la X, toca el ${lvl.t2} para moverlo.`;
     }
 
-    function handleStep() {
-        const lvl = levels[currentLvl];
-        const op = document.getElementById('op');
-        const tMove = document.getElementById('term-move');
-        const res = document.getElementById('result');
-        const instr = document.getElementById('instruction');
+    function evAllow(e) { e.preventDefault(); }
+    function evDrag(e) { e.dataTransfer.setData("text", e.target.id); }
+    function evDrop(e) {
+        e.preventDefault();
+        const lv = learnLevels[curLearn];
+        const board = document.getElementById('learn-board');
+        board.innerHTML = `
+            <div>x</div><div>=</div><div>${lv.target}</div>
+            <div class="btn-op" onclick="finishLearnStep()">${lv.inv}</div><div>${lv.r}</div>
+        `;
+        document.getElementById('learn-instr').innerText = `¡Bien! Ahora toca el signo ${lv.inv} para resolver.`;
+        learnStep = 2;
+    }
 
-        if (step === 1) {
-            // Mover y cambiar signo
-            tMove.classList.remove('interactive');
-            op.style.opacity = '0';
-            
-            setTimeout(() => {
-                op.innerText = '='; // El igual se queda, el operador se mueve
-                const newOp = lvl.op === '+' ? '-' : (lvl.op === '-' ? '+' : (lvl.op === '*' ? '÷' : '•'));
-                
-                tMove.style.transform = 'translateX(100px)';
-                tMove.style.opacity = '0';
-                
-                setTimeout(() => {
-                    tMove.style.transform = 'translateX(0)';
-                    tMove.innerText = newOp + ' ' + lvl.t2;
-                    tMove.style.opacity = '1';
-                    tMove.classList.add('interactive');
-                    tMove.style.color = 'red';
-                    instr.innerText = `¡Bien! El ${lvl.op}${lvl.t2} pasó al otro lado como ${newOp}${lvl.t2}. Ahora tócalo para calcular.`;
-                    step = 2;
-                }, 500);
-            }, 300);
+    function finishLearnStep() {
+        const lv = learnLevels[curLearn];
+        document.getElementById('learn-board').innerHTML = `<div>x</div><div>=</div><div style="color:var(--success)">${lv.res}</div>`;
+        document.getElementById('learn-instr').innerText = "¡Excelente! Nivel completado.";
+        
+        setTimeout(() => {
+            curLearn++;
+            if(curLearn < learnLevels.length) loadLearn();
+            else nav('scr-quiz');
+        }, 2000);
+    }
 
-        } else if (step === 2) {
-            // Calcular final
-            tMove.classList.remove('interactive');
-            res.innerText = lvl.final;
-            tMove.style.opacity = '0';
-            op.style.opacity = '0';
-            instr.innerText = `¡Logrado! X es igual a ${lvl.final}.`;
-            
-            setTimeout(() => {
-                if (currentLvl < levels.length - 1) {
-                    currentLvl++;
-                    renderLevel();
-                } else {
-                    finalizar();
-                }
-            }, 2000);
+    // --- LÓGICA QUIZ (ALEATORIO) ---
+    function generateQuiz() {
+        const container = document.getElementById('quiz-container');
+        container.innerHTML = "";
+        quizData = [];
+
+        for(let i=1; i<=5; i++) {
+            let a = Math.floor(Math.random() * 20) + 2;
+            let b = Math.floor(Math.random() * 50) + 21;
+            let eq, correct;
+
+            if(i===1) { eq = `x + ${a} = ${b}`; correct = b - a; }
+            if(i===2) { eq = `x - ${a} = ${b}`; correct = b + a; }
+            if(i===3) { 
+                let resMult = a * (Math.floor(Math.random()*9)+2);
+                eq = `${a}x = ${resMult}`; correct = resMult / a; 
+            }
+            if(i===4) { eq = `x / ${a} = 5`; correct = 5 * a; }
+            if(i===5) {
+                let xVal = Math.floor(Math.random()*10)+1;
+                let resC = (a * xVal) + 5;
+                eq = `${a}x + 5 = ${resC}`; correct = xVal;
+            }
+
+            quizData.push({ eq, ans: correct });
+            container.innerHTML += `
+                <div class="quiz-card">
+                    <strong>Nivel ${i}:</strong> ${eq}
+                    <input type="number" id="q-ans-${i}" placeholder="Tu resultado">
+                </div>
+            `;
         }
     }
 
-    function finalizar() {
-        document.getElementById('game').classList.add('hidden');
-        document.getElementById('results').classList.remove('hidden');
+    function evaluarQuiz() {
+        let score = 0;
+        quizData.forEach((d, idx) => {
+            const userVal = parseInt(document.getElementById(`q-ans-${idx+1}`).value);
+            if(userVal === d.ans) score++;
+        });
+
+        const msgs = [
+            "¡Sigue intentando, tú puedes!", 
+            "¡Buen comienzo! Vamos por más.", 
+            "¡Vas muy bien, sigue practicando!", 
+            "¡Casi perfecto! Eres genial.", 
+            "¡Increíble! ¡Eres un Maestro de las Ecuaciones!"
+        ];
+        
+        document.getElementById('feedback-msg').innerText = score === 5 ? "🌟 " + msgs[4] : "✨ " + msgs[score-1 || 0];
+        document.getElementById('score-display').innerText = `${score} / 5`;
+        userData.ultimoScore = score;
+        nav('scr-results');
     }
 
     function enviarReporte() {
-        const tel = "56961410052";
-        const msg = `*REPORTE EQUILIBRIA (TEA)*\n\n` +
-                    `Estudiante: ${userData.nombre} ${userData.apellido}\n` +
-                    `Curso: ${userData.curso}\n` +
-                    `Estado: ¡Completó los 5 niveles de guía interactiva! ✅`;
-        window.open(`https://wa.me/${tel}?text=${encodeURIComponent(msg)}`);
+        const url = `https://wa.me/56961410052?text=${encodeURIComponent(
+            `*MR. VEIT - REPORTE DE ECUACIONES*\nEstudiante: ${userData.n} ${userData.a}\nCurso: ${userData.c}\nResultado: ${userData.ultimoScore} de 5 correctas. ✅`
+        )}`;
+        window.open(url);
+    }
+
+    function reiniciarTodo() {
+        curLearn = 0;
+        nav('scr-start');
     }
 </script>
 </body>
