@@ -1,18 +1,17 @@
-  <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mr.Veit - Equilibria Pro (Control de Ritmo)</title>
+    <title>Mr.Veit - Equilibria Pro 3.0</title>
     <style>
         :root {
-            --bg-warm: #fff9f2;
+            --bg-warm: #fffdfa;
             --paper: #ffffff;
             --text-dark: #451a03;
             --mrveit: #d97706;
             --accent: #f59e0b;
             --success: #059669;
-            --soft-red: #ef4444;
             --action-blue: #3b82f6;
         }
 
@@ -47,14 +46,23 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 12px;
-            height: 120px;
-            font-size: 2.2rem;
+            gap: 15px;
+            height: 160px;
+            font-size: 2.5rem;
             background: #fffcf0;
             border-radius: 15px;
-            border: 2px solid #f3e8d2;
             margin: 20px 0;
         }
+
+        .fraction {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            vertical-align: middle;
+            font-size: 2rem;
+        }
+        .fraction span { padding: 2px 10px; }
+        .fraction .num { border-bottom: 3px solid var(--text-dark); }
 
         .draggable {
             background: var(--accent);
@@ -66,8 +74,8 @@
         }
 
         .drop-zone {
-            width: 80px;
-            height: 80px;
+            width: 90px;
+            height: 90px;
             border: 3px dashed #d6d3d1;
             border-radius: 10px;
             display: flex;
@@ -77,23 +85,18 @@
         }
 
         .btn-op {
-            background: var(--soft-red);
+            background: #ef4444;
             color: white;
-            border-radius: 50%;
-            width: 50px;
-            height: 50px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
+            border-radius: 10px;
+            padding: 5px 15px;
             cursor: pointer;
-            font-size: 1.5rem;
             box-shadow: 0 3px 0 #991b1b;
         }
 
         button { width: 100%; padding: 16px; background: var(--mrveit); color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 10px; }
-        .next-btn { background: var(--action-blue); margin-top: 20px; border-bottom: 4px solid #1d4ed8; }
-        .wa-btn { background: #16a34a; }
+        .next-btn { background: var(--action-blue); }
         .hidden { display: none; }
+        input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 2px solid #d6d3d1; font-size: 1rem; box-sizing: border-box; }
     </style>
 </head>
 <body>
@@ -103,7 +106,9 @@
 
     <div id="scr-start" class="screen active">
         <h3 style="text-align:center">¡Hola! Vamos a jugar con Ecuaciones</h3>
-        <input type="text" id="nombre" placeholder="Tu Nombre">
+        <input type="text" id="nombre" placeholder="Nombre">
+        <input type="text" id="apellido" placeholder="Apellido">
+        <input type="text" id="curso" placeholder="Curso (ej: 7mo Básico)">
         <button onclick="iniciar()">Empezar Aventura</button>
     </div>
 
@@ -123,33 +128,35 @@
     <div id="scr-results" class="screen" style="text-align:center">
         <h2 id="res-title"></h2>
         <div id="res-score" style="font-size: 3rem; font-weight: bold; margin: 20px 0;"></div>
-        <button class="wa-btn" onclick="enviarWA()">Enviar reporte a Mr.Veit</button>
-        <button onclick="reiniciar()">Jugar de nuevo</button>
+        <button style="background:#16a34a" onclick="enviarWA()">Enviar reporte a Mr.Veit</button>
+        <button onclick="location.reload()">Reiniciar</button>
     </div>
 </div>
 
 <script>
     let userData = {};
     let curLvl = 0;
+    let step = 1;
     let currentData = {};
 
     function genData(lvl) {
-        let a = Math.floor(Math.random() * 5) + 2; 
-        let x = Math.floor(Math.random() * 8) + 2; 
+        let x = Math.floor(Math.random() * 6) + 2; 
+        let a = Math.floor(Math.random() * 3) + 2; 
         let b = Math.floor(Math.random() * 10) + 2; 
         
         switch(lvl) {
-            case 0: return { s: `Tenías x dulces, compraste ${b} más y ahora tienes ${x+b}.`, l:'x', op:'+', r:b, target:x+b, inv:'-', res:x };
-            case 1: return { s: `En un bus x personas, bajan ${b} y quedan ${x}.`, l:'x', op:'-', r:b, target:x, inv:'+', res:x+b };
-            case 2: return { s: `Tienes ${a} cajas iguales con x lápices. En total hay ${a*x}.`, l:a, op:'·', r:'x', target:a*x, inv:'÷', res:x };
-            case 3: return { s: `Repartes x chocolates entre ${a} amigos y a cada uno le tocan ${x}.`, l:'x', op:'÷', r:a, target:x, inv:'·', res:a*x };
-            case 4: return { s: `El triple de un número (${a}x) más ${b} da como resultado ${a*x+b}.`, l:a+'x', op:'+', r:b, target:a*x+b, inv:'-', res:x };
+            case 0: return { s: `Tenías x dulces, compraste ${b} más y ahora tienes ${x+b}. ¿Cuántos dulces tenías al principio?`, l:'x', op:'+', r:b, target:x+b, inv:'-', res:x, type: 'simple' };
+            case 1: return { s: `En un bus viajan x personas. Bajan ${b} y quedan ${x}. ¿Cuántas personas había en el bus?`, l:'x', op:'-', r:b, target:x, inv:'+', res:x+b, type: 'simple' };
+            case 2: return { s: `Tienes ${a} cajas iguales con x lápices cada una. En total hay ${a*x}. ¿Cuántos lápices trae cada caja?`, l:a, op:'·', r:'x', target:a*x, inv:'÷', res:x, type: 'div' };
+            case 3: return { s: `Si repartes tus x láminas entre ${a} amigos, cada uno recibe ${x}. ¿Cuántas láminas tenías?`, l:'x', op:'/', r:a, target:x, inv:'·', res:a*x, type: 'simple' };
+            case 4: return { s: `El doble de un número (${a}x) más ${b} da como resultado ${a*x+b}. ¿Cuál es el valor del número x?`, l:a+'x', op:'+', r:b, target:a*x+b, inv:'-', res:x, x_val: x, a_val: a, type: 'complejo' };
         }
     }
 
     function iniciar() {
         userData.n = document.getElementById('nombre').value;
-        if(!userData.n) return alert("Escribe tu nombre");
+        userData.c = document.getElementById('curso').value;
+        if(!userData.n || !userData.c) return alert("Por favor completa tus datos");
         curLvl = 0;
         showScreen('scr-learn');
         loadLearn();
@@ -162,86 +169,135 @@
 
     function loadLearn() {
         currentData = genData(curLvl);
-        document.getElementById('btn-next-lvl').classList.add('hidden'); // Escondemos botón hasta terminar
+        step = 1;
+        document.getElementById('btn-next-lvl').classList.add('hidden');
         document.getElementById('learn-story').innerText = currentData.s;
-        document.getElementById('learn-instr').innerText = `Arrastra el ${currentData.r} al otro lado del signo igual.`;
         
         const board = document.getElementById('learn-board');
-        if(currentData.op === '·') {
+        
+        if(currentData.type === 'complejo') {
+            document.getElementById('learn-instr').innerText = `Paso 1: Arrastra el +${currentData.r} al otro lado.`;
+            board.innerHTML = `
+                <div>${currentData.a_val}x</div><div>+</div>
+                <div id="drag-item" class="draggable" draggable="true" ondragstart="drag(event)">${currentData.r}</div>
+                <div>=</div><div>${currentData.target}</div>
+                <div class="drop-zone" ondrop="dropComplejo(event)" ondragover="allow(event)">?</div>
+            `;
+        } else if(currentData.type === 'div') {
+            document.getElementById('learn-instr').innerText = `Paso 1: Arrastra el ${currentData.l} para dividir.`;
             board.innerHTML = `
                 <div id="drag-item" class="draggable" draggable="true" ondragstart="drag(event)">${currentData.l}</div>
                 <div>·</div><div>x</div><div>=</div><div>${currentData.target}</div>
-                <div class="drop-zone" ondrop="drop(event)" ondragover="allow(event)">?</div>
+                <div class="drop-zone" ondrop="dropDiv(event)" ondragover="allow(event)">?</div>
             `;
         } else {
+            document.getElementById('learn-instr').innerText = `Paso 1: Arrastra el ${currentData.r} al otro lado.`;
             board.innerHTML = `
-                <div>${currentData.l}</div><div>${currentData.op}</div>
+                <div>x</div><div>${currentData.op}</div>
                 <div id="drag-item" class="draggable" draggable="true" ondragstart="drag(event)">${currentData.r}</div>
                 <div>=</div><div>${currentData.target}</div>
-                <div class="drop-zone" ondrop="drop(event)" ondragover="allow(event)">?</div>
+                <div class="drop-zone" ondrop="dropSimple(event)" ondragover="allow(event)">?</div>
             `;
         }
     }
 
     function drag(e) { e.dataTransfer.setData("text", e.target.id); }
     function allow(e) { e.preventDefault(); }
-    
-    function drop(e) {
+
+    // Lógica para x + b = c
+    function dropSimple(e) {
         e.preventDefault();
         const board = document.getElementById('learn-board');
-        let termAMover = (currentData.op === '·') ? currentData.l : currentData.r;
-        
-        board.innerHTML = `
-            <div>${currentData.op === '·' ? 'x' : currentData.l}</div><div>=</div><div>${currentData.target}</div>
-            <div class="btn-op" onclick="resolverStep()">${currentData.inv}</div>
-            <div>${termAMover}</div>
-        `;
-        document.getElementById('learn-instr').innerText = `¡Bien hecho! Ahora toca el signo "${currentData.inv}" para ver el resultado.`;
+        board.innerHTML = `<div>x</div><div>=</div><div>${currentData.target}</div><div class="btn-op" onclick="resolverSimple()">${currentData.inv}</div><div>${currentData.r}</div>`;
+        document.getElementById('learn-instr').innerText = `Paso 2: Toca el signo "${currentData.inv}" para calcular.`;
     }
 
-    function resolverStep() {
+    function resolverSimple() {
         document.getElementById('learn-board').innerHTML = `<div>x</div><div>=</div><div style="color:var(--success)">${currentData.res}</div>`;
-        document.getElementById('learn-instr').innerText = "¡Excelente! Has resuelto la ecuación.";
-        
-        // MOSTRAR BOTÓN SIGUIENTE EN LUGAR DE PASAR AUTOMÁTICO
+        document.getElementById('learn-instr').innerText = "¡Excelente! Has encontrado x.";
         document.getElementById('btn-next-lvl').classList.remove('hidden');
+    }
+
+    // Lógica para ax = b
+    function dropDiv(e) {
+        e.preventDefault();
+        const board = document.getElementById('learn-board');
+        board.innerHTML = `
+            <div>x</div><div>=</div>
+            <div class="fraction">
+                <span class="num">${currentData.target}</span>
+                <span>${currentData.l}</span>
+            </div>
+            <div class="btn-op" onclick="resolverSimple()">÷</div>
+        `;
+        document.getElementById('learn-instr').innerText = "Paso 2: Toca el signo de dividir.";
+    }
+
+    // Lógica para ax + b = c
+    function dropComplejo(e) {
+        e.preventDefault();
+        const board = document.getElementById('learn-board');
+        let tempRes = currentData.target - currentData.r;
+        board.innerHTML = `
+            <div>${currentData.a_val}x</div><div>=</div><div>${currentData.target}</div><div class="btn-op" onclick="resolverComplejo1()">${currentData.inv}</div><div>${currentData.r}</div>
+        `;
+        document.getElementById('learn-instr').innerText = "Paso 2: Resuelve la resta.";
+    }
+
+    function resolverComplejo1() {
+        let tempRes = currentData.target - currentData.r;
+        const board = document.getElementById('learn-board');
+        board.innerHTML = `
+            <div id="drag-coef" class="draggable" draggable="true" ondragstart="drag(event)">${currentData.a_val}</div>
+            <div>x</div><div>=</div><div>${tempRes}</div>
+            <div class="drop-zone" ondrop="dropComplejoFinal(event)" ondragover="allow(event)">?</div>
+        `;
+        document.getElementById('learn-instr').innerText = `Paso 3: Ahora arrastra el ${currentData.a_val} para dejar sola a la x.`;
+    }
+
+    function dropComplejoFinal(e) {
+        e.preventDefault();
+        let tempRes = currentData.target - currentData.r;
+        const board = document.getElementById('learn-board');
+        board.innerHTML = `
+            <div>x</div><div>=</div>
+            <div class="fraction">
+                <span class="num">${tempRes}</span>
+                <span>${currentData.a_val}</span>
+            </div>
+            <div class="btn-op" onclick="resolverSimple()">÷</div>
+        `;
+        document.getElementById('learn-instr').innerText = "Paso 4: Toca para dividir y terminar.";
     }
 
     function avanzarNivel() {
         curLvl++;
-        if(curLvl < 5) loadLearn();
-        else startQuiz();
+        if(curLvl < 5) loadLearn(); else startQuiz();
     }
 
     function startQuiz() {
         showScreen('scr-quiz');
         const list = document.getElementById('quiz-list');
-        list.innerHTML = "";
-        window.quizActual = [];
+        list.innerHTML = ""; window.quizActual = [];
         for(let i=0; i<5; i++) {
-            let d = genData(i);
-            window.quizActual.push(d);
-            list.innerHTML += `<div class="story-box" style="background:white">${d.l} ${d.op} ${d.r} = ${d.target} <br> <input type="number" id="q-${i}" placeholder="Escribe el valor de x"></div>`;
+            let d = genData(i); window.quizActual.push(d);
+            list.innerHTML += `<div class="story-box" style="background:white">${d.s}<br><b>Ecuación:</b> ${d.l} ${d.op} ${d.r} = ${d.target}<br><input type="number" id="q-${i}" placeholder="x = ?"></div>`;
         }
     }
 
     function evaluarQuiz() {
         let nota = 0;
-        window.quizActual.forEach((d, i) => {
-            if(parseInt(document.getElementById(`q-${i}`).value) === d.res) nota++;
-        });
+        window.quizActual.forEach((d, i) => { if(parseInt(document.getElementById(`q-${i}`).value) === d.res) nota++; });
         userData.nota = nota;
         document.getElementById('res-score').innerText = nota + " / 5";
-        document.getElementById('res-title').innerText = nota >= 4 ? "¡Eres un genio! 🌟" : "¡Sigue así! 💪";
+        document.getElementById('res-title').innerText = nota >= 4 ? "¡Excelente! 🌟" : "¡Sigue practicando! 💪";
         showScreen('scr-results');
     }
 
     function enviarWA() {
-        const msg = `*MR. VEIT - REPORTE*\nEstudiante: ${userData.n}\nLogro: ${userData.nota} correctas.`;
+        const msg = `*REPORTE MR. VEIT*\nEstudiante: ${userData.n}\nCurso: ${userData.c}\nResultado: ${userData.nota}/5`;
         window.open(`https://wa.me/56961410052?text=${encodeURIComponent(msg)}`);
     }
-
-    function reiniciar() { iniciar(); }
 </script>
 </body>
 </html>
