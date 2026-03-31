@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mr.Veit - Equilibria Rastro</title>
+    <title>Mr.Veit - Equilibria Pro (Final)</title>
     <style>
         :root {
             --bg-warm: #fffdfa;
@@ -12,55 +12,36 @@
             --mrveit: #d97706;
             --accent: #f59e0b;
             --success: #059669;
+            --action-blue: #3b82f6;
             --trace: #e2e8f0;
         }
 
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-warm); margin: 0; display: flex; justify-content: center; min-height: 100vh; color: var(--text-dark); }
         #app { background: var(--paper); width: 95%; max-width: 650px; margin: 20px; border-radius: 20px; box-shadow: 0 10px 25px rgba(0,0,0,0.1); padding: 25px; border: 4px solid var(--mrveit); }
-        .logo { font-size: 2.2rem; font-weight: 900; color: var(--mrveit); text-align: center; }
+        .logo { font-size: 2.2rem; font-weight: 900; color: var(--mrveit); text-align: center; margin-bottom: 10px; }
         .screen { display: none; }
         .active { display: block; }
         
-        /* HISTORIAL DE PASOS */
-        .history-container {
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            margin: 20px 0;
-            padding: 10px;
-            background: #fdfbf7;
-            border-radius: 15px;
-            min-height: 200px;
-            border: 1px solid #eee;
-        }
-
-        .step-row {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 15px;
-            font-size: 1.8rem;
-            padding: 10px;
-            border-bottom: 2px dashed var(--trace);
-            animation: fadeIn 0.5s ease;
-        }
-
+        .history-container { display: flex; flex-direction: column; gap: 10px; margin: 20px 0; padding: 15px; background: #fdfbf7; border-radius: 15px; min-height: 150px; border: 1px solid #eee; }
+        .step-row { display: flex; justify-content: center; align-items: center; gap: 15px; font-size: 1.8rem; padding: 10px; border-bottom: 2px dashed var(--trace); animation: fadeIn 0.4s ease; }
         .step-row.current { border-bottom: none; background: #fffbeb; border-radius: 10px; border: 2px solid var(--accent); }
-        .step-row.old { opacity: 0.6; font-size: 1.4rem; color: #64748b; }
+        .step-row.old { opacity: 0.5; font-size: 1.3rem; color: #64748b; }
 
-        .fraction { display: inline-flex; flex-direction: column; align-items: center; font-size: 1.5rem; }
-        .num { border-bottom: 2px solid var(--text-dark); padding: 0 5px; }
+        .fraction { display: inline-flex; flex-direction: column; align-items: center; font-size: 1.6rem; }
+        .num { border-bottom: 2px solid var(--text-dark); padding: 0 10px; }
 
-        .draggable { background: var(--accent); color: white; padding: 5px 12px; border-radius: 8px; cursor: grab; }
-        .drop-zone { width: 60px; height: 60px; border: 2px dashed #cbd5e1; border-radius: 8px; display: flex; justify-content: center; align-items: center; background: #f8fafc; }
+        .draggable { background: var(--accent); color: white; padding: 6px 14px; border-radius: 8px; cursor: grab; box-shadow: 0 3px 0 #b45309; }
+        .drop-zone { width: 70px; height: 70px; border: 2px dashed #cbd5e1; border-radius: 8px; display: flex; justify-content: center; align-items: center; background: #f8fafc; font-size: 1.2rem; color: #94a3b8; }
         
-        .btn-op { background: #ef4444; color: white; padding: 4px 12px; border-radius: 8px; cursor: pointer; font-size: 1.2rem; }
+        .btn-op { background: #ef4444; color: white; padding: 5px 15px; border-radius: 8px; cursor: pointer; font-size: 1.3rem; box-shadow: 0 3px 0 #991b1b; }
         
-        .story-box { background: #fffbeb; border-left: 5px solid var(--accent); padding: 15px; border-radius: 8px; margin-bottom: 10px; }
-        button { width: 100%; padding: 16px; background: var(--mrveit); color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; }
-        input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #ccc; }
+        .story-box { background: #fffbeb; border-left: 5px solid var(--accent); padding: 15px; border-radius: 8px; margin-bottom: 10px; font-size: 1.1rem; }
+        button { width: 100%; padding: 16px; background: var(--mrveit); color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-bottom: 10px; }
+        .secondary-btn { background: #64748b; }
+        .quiz-btn { background: var(--success); }
+        input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #ccc; font-size: 1rem; }
         
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
         .hidden { display: none; }
     </style>
 </head>
@@ -70,33 +51,40 @@
     <div class="logo">Mr.Veit</div>
 
     <div id="scr-start" class="screen active">
-        <h3 style="text-align:center">¡Bienvenido a Equilibria!</h3>
-        <input type="text" id="nombre" placeholder="Nombre">
-        <input type="text" id="curso" placeholder="Curso">
-        <button onclick="iniciar()">Comenzar</button>
+        <h3 style="text-align:center">¡Hola! Vamos a aprender Ecuaciones</h3>
+        <input type="text" id="nombre" placeholder="Nombre y Apellido">
+        <input type="text" id="curso" placeholder="Tu Curso">
+        <button onclick="iniciar()">Comenzar Aventura</button>
     </div>
 
     <div id="scr-learn" class="screen">
         <div class="story-box" id="learn-story"></div>
         <p id="learn-instr" style="text-align:center; font-weight:bold; color:var(--mrveit)"></p>
-        
-        <div class="history-container" id="history-box">
-            </div>
+        <div class="history-container" id="history-box"></div>
+        <button id="btn-next-lvl" class="hidden" style="background:var(--action-blue)" onclick="avanzarNivel()">Siguiente Ejercicio →</button>
+    </div>
 
-        <button id="btn-next-lvl" class="hidden" style="background:#3b82f6" onclick="avanzarNivel()">Siguiente Ejercicio →</button>
+    <div id="scr-choice" class="screen" style="text-align:center">
+        <div class="story-box">
+            <h3>¡Excelente trabajo practicando!</h3>
+            <p>¿Qué quieres hacer ahora? Puedes practicar con más ejercicios diferentes o pasar a la evaluación final.</p>
+        </div>
+        <button class="secondary-btn" onclick="reiniciarPractica()">🔄 Quiero practicar más</button>
+        <button class="quiz-btn" onclick="startQuiz()">📝 Ir a la Evaluación</button>
     </div>
 
     <div id="scr-quiz" class="screen">
-        <h3>🎯 Desafío de Cuaderno</h3>
+        <h3>🎯 Evaluación Final</h3>
+        <p>Resuelve en tu cuaderno y anota el valor de x:</p>
         <div id="quiz-list"></div>
-        <button onclick="evaluarQuiz()">Calificar</button>
+        <button onclick="evaluarQuiz()">Enviar Respuestas</button>
     </div>
 
     <div id="scr-results" class="screen" style="text-align:center">
         <h2 id="res-title"></h2>
-        <div id="res-score" style="font-size: 3rem; margin: 20px 0;"></div>
-        <button style="background:#16a34a" onclick="enviarWA()">Enviar a Mr.Veit</button>
-        <button onclick="location.reload()">Reiniciar</button>
+        <div id="res-score" style="font-size: 3.5rem; font-weight: bold; margin: 20px 0;"></div>
+        <button style="background:#16a34a" onclick="enviarWA()">Enviar Reporte a Mr.Veit</button>
+        <button class="secondary-btn" onclick="location.reload()">Salir</button>
     </div>
 </div>
 
@@ -106,22 +94,22 @@
     let currentData = {};
 
     function genData(lvl) {
-        let x = Math.floor(Math.random() * 5) + 2; 
+        let x = Math.floor(Math.random() * 7) + 2; 
         let a = Math.floor(Math.random() * 3) + 2; 
-        let b = Math.floor(Math.random() * 8) + 2; 
+        let b = Math.floor(Math.random() * 9) + 2; 
         switch(lvl) {
-            case 0: return { s: `Tenías x cartas, te dieron ${b} más. Ahora tienes ${x+b}. ¿Cuántas tenías?`, l:'x', op:'+', r:b, target:x+b, inv:'-', res:x, type:'simple' };
-            case 1: return { s: `Había x aves, volaron ${b} y quedaron ${x}. ¿Cuántas aves había?`, l:'x', op:'-', r:b, target:x, inv:'+', res:x+b, type:'simple' };
-            case 2: return { s: `Hay ${a} grupos iguales con x niños. Total: ${a*x}. ¿Cuántos niños por grupo?`, l:a, op:'·', r:'x', target:a*x, inv:'÷', res:x, type:'div' };
-            case 3: return { s: `El doble de un número (${a}x) más ${b} es ${a*x+b}. ¿Cuál es el número?`, l:a+'x', op:'+', r:b, target:a*x+b, inv:'-', res:x, x_val:x, a_val:a, type:'complejo' };
-            case 4: return { s: `Repartes x dulces entre ${a} amigos y sobran ${x}. ¿Cuántos dulces tenías?`, l:'x', op:'÷', r:a, target:x, inv:'·', res:a*x, type:'simple' };
+            case 0: return { s: `Tenías x dulces, compraste ${b} más. Ahora tienes ${x+b}. ¿Cuántos tenías?`, l:'x', op:'+', r:b, target:x+b, inv:'-', res:x, type:'simple' };
+            case 1: return { s: `Había x personas en el bus, bajaron ${b} y quedaron ${x}. ¿Cuántos había?`, l:'x', op:'-', r:b, target:x, inv:'+', res:x+b, type:'simple' };
+            case 2: return { s: `Tienes ${a} cajas iguales con x lápices. Total: ${a*x}. ¿Cuántos hay por caja?`, l:a, op:'·', r:'x', target:a*x, inv:'÷', res:x, type:'div' };
+            case 3: return { s: `El triple de un número (${a}x) más ${b} es ${a*x+b}. ¿Cuál es el número x?`, l:a+'x', op:'+', r:b, target:a*x+b, inv:'-', res:x, x_val:x, a_val:a, type:'complejo' };
+            case 4: return { s: `Repartes x hojas entre ${a} alumnos y cada uno recibe ${x}. ¿Cuántas hojas tenías?`, l:'x', op:'÷', r:a, target:x, inv:'·', res:a*x, type:'simple' };
         }
     }
 
     function iniciar() {
         userData.n = document.getElementById('nombre').value;
         userData.c = document.getElementById('curso').value;
-        if(!userData.n) return alert("Escribe tu nombre");
+        if(!userData.n || !userData.c) return alert("Completa tus datos para empezar");
         curLvl = 0;
         showScreen('scr-learn');
         loadLearn();
@@ -136,9 +124,8 @@
         currentData = genData(curLvl);
         document.getElementById('btn-next-lvl').classList.add('hidden');
         document.getElementById('learn-story').innerText = currentData.s;
-        document.getElementById('history-box').innerHTML = ""; // Limpiar rastro
+        document.getElementById('history-box').innerHTML = ""; 
         
-        // PRIMER PASO: Mostrar ecuación original
         const row = document.createElement('div');
         row.className = "step-row current";
         row.id = "active-row";
@@ -161,22 +148,57 @@
 
     function fixStep() {
         const oldRow = document.getElementById('active-row');
-        oldRow.id = "";
-        oldRow.className = "step-row old";
-        // Eliminar elementos interactivos del paso viejo
-        oldRow.querySelectorAll('.drop-zone, .draggable').forEach(el => el.style.display = 'none');
+        if(oldRow) {
+            oldRow.id = "";
+            oldRow.className = "step-row old";
+            oldRow.querySelectorAll('.drop-zone, .draggable').forEach(el => el.style.display = 'none');
+        }
     }
 
-    // --- LOGICA SIMPLE ---
     function dropSimple(e) {
-        e.preventDefault();
-        fixStep();
+        e.preventDefault(); fixStep();
         const row = document.createElement('div');
-        row.className = "step-row current";
-        row.id = "active-row";
+        row.className = "step-row current"; row.id = "active-row";
         row.innerHTML = `<div>x</div><div>=</div><div>${currentData.target}</div><div class="btn-op" onclick="resolverSimple()">${currentData.inv}</div><div>${currentData.r}</div>`;
         document.getElementById('history-box').appendChild(row);
-        document.getElementById('learn-instr').innerText = "Paso 2: Calcula el resultado.";
+        document.getElementById('learn-instr').innerText = "Paso 2: Toca el signo para calcular.";
+    }
+
+    function dropDiv(e) {
+        e.preventDefault(); fixStep();
+        const row = document.createElement('div');
+        row.className = "step-row current"; row.id = "active-row";
+        row.innerHTML = `<div>x</div><div>=</div><div class="fraction"><span class="num">${currentData.target}</span><span>${currentData.l}</span></div><div class="btn-op" onclick="resolverSimple()">÷</div>`;
+        document.getElementById('history-box').appendChild(row);
+        document.getElementById('learn-instr').innerText = "Paso 2: Haz clic en dividir.";
+    }
+
+    function dropComplejo(e) {
+        e.preventDefault(); fixStep();
+        const row = document.createElement('div');
+        row.className = "step-row current"; row.id = "active-row";
+        row.innerHTML = `<div>${currentData.a_val}x</div><div>=</div><div>${currentData.target}</div><div class="btn-op" onclick="resolverComplejo1()">${currentData.inv}</div><div>${currentData.r}</div>`;
+        document.getElementById('history-box').appendChild(row);
+        document.getElementById('learn-instr').innerText = "Paso 2: Calcula la resta.";
+    }
+
+    function resolverComplejo1() {
+        let tempRes = currentData.target - currentData.r;
+        fixStep();
+        const row = document.createElement('div');
+        row.className = "step-row current"; row.id = "active-row";
+        row.innerHTML = `<div id="drag-coef" class="draggable" draggable="true" ondragstart="drag(event)">${currentData.a_val}</div><div>x</div><div>=</div><div>${tempRes}</div><div class="drop-zone" ondrop="dropDivFinal(event, ${tempRes})" ondragover="allow(event)">?</div>`;
+        document.getElementById('history-box').appendChild(row);
+        document.getElementById('learn-instr').innerText = "Paso 3: Arrastra el número para dividir.";
+    }
+
+    function dropDivFinal(e, tr) {
+        e.preventDefault(); fixStep();
+        const row = document.createElement('div');
+        row.className = "step-row current"; row.id = "active-row";
+        row.innerHTML = `<div>x</div><div>=</div><div class="fraction"><span class="num">${tr}</span><span>${currentData.a_val}</span></div><div class="btn-op" onclick="resolverSimple()">÷</div>`;
+        document.getElementById('history-box').appendChild(row);
+        document.getElementById('learn-instr').innerText = "Paso 4: Divide para terminar.";
     }
 
     function resolverSimple() {
@@ -185,59 +207,19 @@
         row.className = "step-row current";
         row.innerHTML = `<div>x</div><div>=</div><div style="color:var(--success)">${currentData.res}</div>`;
         document.getElementById('history-box').appendChild(row);
-        document.getElementById('learn-instr').innerText = "¡Misión cumplida! Mira el rastro antes de seguir.";
+        document.getElementById('learn-instr').innerText = "¡Excelente!";
         document.getElementById('btn-next-lvl').classList.remove('hidden');
-    }
-
-    // --- LOGICA DIVISIÓN ---
-    function dropDiv(e) {
-        e.preventDefault();
-        fixStep();
-        const row = document.createElement('div');
-        row.className = "step-row current";
-        row.id = "active-row";
-        row.innerHTML = `<div>x</div><div>=</div><div class="fraction"><span class="num">${currentData.target}</span><span>${currentData.l}</span></div><div class="btn-op" onclick="resolverSimple()">÷</div>`;
-        document.getElementById('history-box').appendChild(row);
-        document.getElementById('learn-instr').innerText = "Paso 2: Haz click para dividir.";
-    }
-
-    // --- LOGICA COMPLEJA (2 PASOS) ---
-    function dropComplejo(e) {
-        e.preventDefault();
-        fixStep();
-        const row = document.createElement('div');
-        row.className = "step-row current";
-        row.id = "active-row";
-        row.innerHTML = `<div>${currentData.a_val}x</div><div>=</div><div>${currentData.target}</div><div class="btn-op" onclick="resolverComplejo1()">${currentData.inv}</div><div>${currentData.r}</div>`;
-        document.getElementById('history-box').appendChild(row);
-        document.getElementById('learn-instr').innerText = "Paso 2: Resta los números.";
-    }
-
-    function resolverComplejo1() {
-        let tempRes = currentData.target - currentData.r;
-        fixStep();
-        const row = document.createElement('div');
-        row.className = "step-row current";
-        row.id = "active-row";
-        row.innerHTML = `<div id="drag-coef" class="draggable" draggable="true" ondragstart="drag(event)">${currentData.a_val}</div><div>x</div><div>=</div><div>${tempRes}</div><div class="drop-zone" ondrop="dropDivFinal(event, ${tempRes})" ondragover="allow(event)">?</div>`;
-        document.getElementById('history-box').appendChild(row);
-        document.getElementById('learn-instr').innerText = "Paso 3: Arrastra para despejar x.";
-    }
-
-    function dropDivFinal(e, tempRes) {
-        e.preventDefault();
-        fixStep();
-        const row = document.createElement('div');
-        row.className = "step-row current";
-        row.id = "active-row";
-        row.innerHTML = `<div>x</div><div>=</div><div class="fraction"><span class="num">${tempRes}</span><span>${currentData.a_val}</span></div><div class="btn-op" onclick="resolverSimple()">÷</div>`;
-        document.getElementById('history-box').appendChild(row);
-        document.getElementById('learn-instr').innerText = "Paso 4: Divide para el final.";
     }
 
     function avanzarNivel() {
         curLvl++;
-        if(curLvl < 5) loadLearn(); else startQuiz();
+        if(curLvl < 5) loadLearn(); else showScreen('scr-choice');
+    }
+
+    function reiniciarPractica() {
+        curLvl = 0;
+        showScreen('scr-learn');
+        loadLearn();
     }
 
     function startQuiz() {
@@ -246,7 +228,7 @@
         list.innerHTML = ""; window.quizActual = [];
         for(let i=0; i<5; i++) {
             let d = genData(i); window.quizActual.push(d);
-            list.innerHTML += `<div class="story-box" style="background:white; border:1px solid #ddd">${d.s}<br><b>Ecuación:</b> ${d.l} ${d.op} ${d.r} = ${d.target}<br><input type="number" id="q-${i}" placeholder="x = ?"></div>`;
+            list.innerHTML += `<div class="story-box" style="background:white; border:1px solid #ddd">${d.s}<br><b>Ecuación:</b> ${d.l} ${d.op} ${d.r} = ${d.target}<br><input type="number" id="q-${i}" placeholder="Escribe aquí el valor de x"></div>`;
         }
     }
 
@@ -255,12 +237,12 @@
         window.quizActual.forEach((d, i) => { if(parseInt(document.getElementById(`q-${i}`).value) === d.res) nota++; });
         userData.nota = nota;
         document.getElementById('res-score').innerText = nota + " / 5";
-        document.getElementById('res-title').innerText = nota >= 4 ? "¡Eres un maestro! 🌟" : "¡Buen intento! 💪";
+        document.getElementById('res-title').innerText = nota >= 4 ? "¡Eres un experto! 🌟" : "¡Muy bien hecho! 💪";
         showScreen('scr-results');
     }
 
     function enviarWA() {
-        const msg = `*REPORTE MR. VEIT*\nEstudiante: ${userData.n}\nNota: ${userData.nota}/5`;
+        const msg = `*REPORTE MR. VEIT*\nEstudiante: ${userData.n}\nCurso: ${userData.c}\nNota: ${userData.nota}/5`;
         window.open(`https://wa.me/56961410052?text=${encodeURIComponent(msg)}`);
     }
 </script>
