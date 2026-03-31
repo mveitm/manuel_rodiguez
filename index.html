@@ -6,46 +6,45 @@
     <title>Mr.Veit - Equilibria Pro</title>
     <style>
         :root {
-            --paper: #fdfdfd;
-            --ink: #1e293b;
-            --mrveit: #2563eb;
+            --bg-warm: #fff9f2;
+            --paper: #ffffff;
+            --text-dark: #451a03;
+            --mrveit: #d97706; /* Ámbar cálido */
             --accent: #f59e0b;
-            --success: #10b981;
-            --grid: #e2e8f0;
+            --success: #059669;
+            --soft-red: #ef4444;
         }
 
         body {
-            font-family: 'Comic Sans MS', 'Segoe UI', sans-serif;
-            background-color: var(--grid);
-            background-image: radial-gradient(circle, #cbd5e1 1px, transparent 1px);
-            background-size: 30px 30px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-warm);
+            background-image: radial-gradient(#e7d8c9 1px, transparent 1px);
+            background-size: 20px 20px;
             margin: 0;
             display: flex;
             justify-content: center;
             min-height: 100vh;
-            color: var(--ink);
+            color: var(--text-dark);
         }
 
         #app {
             background: var(--paper);
             width: 95%;
-            max-width: 650px;
+            max-width: 600px;
             margin: 20px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(69, 26, 3, 0.1);
             padding: 25px;
-            border: 3px solid var(--mrveit);
-            display: flex;
-            flex-direction: column;
+            border: 4px solid var(--mrveit);
+            position: relative;
         }
 
         .logo {
-            font-size: 2.5rem;
+            font-size: 2.2rem;
             font-weight: 900;
             color: var(--mrveit);
             text-align: center;
-            margin-bottom: 10px;
-            text-shadow: 2px 2px #bfdbfe;
+            margin-bottom: 5px;
         }
 
         .screen { display: none; }
@@ -53,99 +52,107 @@
 
         .story-box {
             background: #fffbeb;
-            border: 2px solid #fef3c7;
+            border-left: 5px solid var(--accent);
             padding: 15px;
-            border-radius: 10px;
+            border-radius: 8px;
             margin: 15px 0;
             font-size: 1.1rem;
             line-height: 1.4;
+        }
+
+        .instruction {
+            text-align: center;
+            font-weight: bold;
+            color: var(--mrveit);
+            margin-bottom: 10px;
+            min-height: 1.2em;
         }
 
         .board {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 12px;
-            height: 120px;
-            font-size: 2.5rem;
-            background: #f8fafc;
-            border-radius: 12px;
+            gap: 10px;
+            height: 100px;
+            font-size: 2.2rem;
+            background: #fffcf0;
+            border-radius: 15px;
+            border: 2px solid #f3e8d2;
             margin: 20px 0;
         }
 
         .draggable {
             background: var(--accent);
             color: white;
-            padding: 5px 15px;
-            border-radius: 8px;
+            padding: 5px 12px;
+            border-radius: 10px;
             cursor: grab;
-            transition: transform 0.2s;
+            box-shadow: 0 4px 0 #b45309;
         }
 
         .drop-zone {
-            width: 80px;
-            height: 80px;
-            border: 3px dashed #94a3b8;
+            width: 70px;
+            height: 70px;
+            border: 3px dashed #d6d3d1;
             border-radius: 10px;
             display: flex;
             justify-content: center;
             align-items: center;
-            background: #f1f5f9;
+            background: #fafaf9;
         }
 
         .btn-op {
-            background: #ef4444;
+            background: var(--soft-red);
             color: white;
             border-radius: 50%;
-            width: 50px;
-            height: 50px;
+            width: 45px;
+            height: 45px;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            font-size: 1.5rem;
+            font-size: 1.3rem;
+            box-shadow: 0 3px 0 #991b1b;
         }
 
         .quiz-card {
-            background: white;
-            border: 2px solid var(--grid);
-            padding: 15px;
+            background: #fffcf0;
+            border: 1px solid #e7e5e4;
+            padding: 12px;
             border-radius: 10px;
-            margin-bottom: 15px;
+            margin-bottom: 10px;
         }
 
-        input[type="number"], input[type="text"] {
+        input {
             width: 100%;
             padding: 12px;
             margin: 8px 0;
-            border-radius: 8px;
-            border: 2px solid #cbd5e1;
+            border-radius: 10px;
+            border: 2px solid #d6d3d1;
             font-size: 1rem;
+            box-sizing: border-box;
         }
 
         button {
             width: 100%;
-            padding: 15px;
+            padding: 16px;
             background: var(--mrveit);
             color: white;
             border: none;
-            border-radius: 10px;
-            font-size: 1.2rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
             font-weight: bold;
             cursor: pointer;
             margin-top: 10px;
+            transition: transform 0.1s;
         }
 
-        .wa-btn { background: #22c55e; }
-        .retry-btn { background: #64748b; }
+        button:active { transform: translateY(2px); }
 
-        .feedback {
-            font-size: 1.3rem;
-            color: var(--mrveit);
-            text-align: center;
-            font-weight: bold;
-            margin: 20px 0;
-        }
+        .wa-btn { background: #16a34a; }
+        .retry-btn { background: #78350f; margin-top: 5px; }
+
+        .hidden { display: none; }
     </style>
 </head>
 <body>
@@ -154,169 +161,167 @@
     <div class="logo">Mr.Veit</div>
 
     <div id="scr-start" class="screen active">
-        <h3 style="text-align:center">¡Bienvenido a Equilibria!</h3>
-        <p>Aprende a resolver ecuaciones con historias y juegos.</p>
-        <input type="text" id="nombre" placeholder="Tu Nombre">
-        <input type="text" id="apellido" placeholder="Tu Apellido">
-        <input type="text" id="curso" placeholder="Tu Curso">
-        <button onclick="nav('scr-learn')">¡Empezar a Aprender!</button>
+        <h3 style="text-align:center">¡Hola! Vamos a jugar con Ecuaciones</h3>
+        <p style="text-align:center">Aprende paso a paso y diviértete.</p>
+        <input type="text" id="nombre" placeholder="Escribe tu Nombre">
+        <input type="text" id="apellido" placeholder="Escribe tu Apellido">
+        <input type="text" id="curso" placeholder="Escribe tu Curso">
+        <button onclick="iniciar()">Empezar Aventura</button>
     </div>
 
     <div id="scr-learn" class="screen">
         <div class="story-box" id="learn-story"></div>
-        <div id="learn-instr" style="text-align:center; font-weight:bold; color:var(--mrveit)"></div>
+        <div class="instruction" id="learn-instr"></div>
         <div class="board" id="learn-board"></div>
-        <button id="btn-next-learn" class="hidden" onclick="nextLearnLevel()">Siguiente Historia</button>
     </div>
 
     <div id="scr-quiz" class="screen">
-        <h3>🎯 Desafío Final</h3>
-        <p>Resuelve estos ejercicios en tu cuaderno e ingresa los resultados aquí:</p>
-        <div id="quiz-container"></div>
-        <button onclick="evaluarQuiz()">Ver mis resultados</button>
+        <h3>🎯 Tu Turno</h3>
+        <p>Resuelve estos 5 ejercicios en tu cuaderno y anota el resultado de la X.</p>
+        <div id="quiz-list"></div>
+        <button onclick="evaluarQuiz()">Terminar y calificar</button>
     </div>
 
-    <div id="scr-results" class="screen">
-        <div id="feedback-msg" class="feedback"></div>
-        <div id="score-display" style="text-align:center; font-size: 2rem; margin-bottom: 20px;"></div>
-        <button class="wa-btn" onclick="enviarReporte()">Enviar a Mr.Veit (WhatsApp)</button>
-        <button class="retry-btn" onclick="reiniciarTodo()">Intentar con nuevos números</button>
+    <div id="scr-results" class="screen" style="text-align:center">
+        <h2 id="res-title"></h2>
+        <div id="res-score" style="font-size: 3rem; font-weight: bold; margin: 20px 0;"></div>
+        <p id="res-msg"></p>
+        <button class="wa-btn" onclick="enviarWA()">Enviar reporte a Mr.Veit</button>
+        <button class="retry-btn" onclick="reiniciar()">Jugar con otros números</button>
     </div>
 </div>
 
 <script>
-    // Configuración de niveles de aprendizaje (historias fijas)
-    const learnLevels = [
-        { s: "Ana tiene x dulces. Su tío le regala 15 más y ahora tiene 40. ¿Cuántos tenía?", l: "x", op: "+", r: "15", target: "40", inv: "-", res: 25 },
-        { s: "Un avión tiene x asientos. Se bajan 20 pasajeros y quedan 100. ¿Cuántos asientos hay?", l: "x", op: "-", r: "20", target: "100", inv: "+", res: 120 }
-    ];
-
-    let curLearn = 0;
-    let learnStep = 1;
-    let quizData = [];
     let userData = {};
+    let curLvl = 0;
+    let step = 1; 
+    let currentData = {};
+    let quizItems = [];
 
-    function nav(id) {
-        if(id === 'scr-learn') {
-            userData.n = document.getElementById('nombre').value;
-            userData.a = document.getElementById('apellido').value;
-            userData.c = document.getElementById('curso').value;
-            if(!userData.n) return alert("Escribe tu nombre");
-            loadLearn();
-        }
-        if(id === 'scr-quiz') generateQuiz();
+    // Generador de números aleatorios que aseguren enteros
+    function genData(lvl) {
+        let a = Math.floor(Math.random() * 8) + 2;
+        let x = Math.floor(Math.random() * 9) + 2;
+        let b = Math.floor(Math.random() * 15) + 5;
         
+        switch(lvl) {
+            case 0: return { s: `Tenías x monedas, encontraste ${b} más y ahora tienes ${x+b}.`, l:'x', op:'+', r:b, target:x+b, inv:'-', res:x };
+            case 1: return { s: `Un bus lleva x personas, bajan ${a} y quedan ${b}.`, l:'x', op:'-', r:a, target:b, inv:'+', res:a+b };
+            case 2: return { s: `Compraste ${a} helados iguales por $${a*x}. ¿Cuánto costó cada uno?`, l:a, op:'·', r:'x', target:a*x, inv:'÷', res:x };
+            case 3: return { s: `Repartiste x galletas entre ${a} amigos y a cada uno le tocaron ${x}.`, l:'x', op:'÷', r:a, target:x, inv:'·', res:a*x };
+            case 4: return { s: `El doble de tu edad (${a}x) más ${b} años da ${a*x+b}.`, l:a+'x', op:'+', r:b, target:a*x+b, inv:'-', res:x };
+        }
+    }
+
+    function iniciar() {
+        userData.n = document.getElementById('nombre').value;
+        userData.a = document.getElementById('apellido').value;
+        userData.c = document.getElementById('curso').value;
+        if(!userData.n) return alert("Por favor escribe tu nombre");
+        curLvl = 0;
+        showScreen('scr-learn');
+        loadLearn();
+    }
+
+    function showScreen(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
     }
 
-    // --- LÓGICA APRENDIZAJE ---
+    // --- APRENDIZAJE ---
     function loadLearn() {
-        const lv = learnLevels[curLearn];
-        learnStep = 1;
-        document.getElementById('learn-story').innerText = lv.s;
-        document.getElementById('learn-instr').innerText = `Arrastra el ${lv.op}${lv.r} al otro lado.`;
+        currentData = genData(curLvl);
+        step = 1;
+        document.getElementById('learn-story').innerText = currentData.s;
+        document.getElementById('learn-instr').innerText = `Paso 1: Arrastra el ${currentData.op}${currentData.r} al otro lado.`;
         
         const board = document.getElementById('learn-board');
         board.innerHTML = `
-            <div>x</div><div>${lv.op}</div>
-            <div id="drag-item" class="draggable" draggable="true" ondragstart="evDrag(event)">${lv.r}</div>
-            <div>=</div><div>${lv.target}</div>
-            <div class="drop-zone" ondrop="evDrop(event)" ondragover="evAllow(event)">?</div>
+            <div>${currentData.l === 'x' ? 'x' : currentData.l}</div>
+            <div>${currentData.op}</div>
+            <div id="drag-item" class="draggable" draggable="true" ondragstart="drag(event)">${currentData.l === 'x' ? currentData.r : ''}</div>
+            <div>=</div>
+            <div>${currentData.target}</div>
+            <div class="drop-zone" ondrop="drop(event)" ondragover="allow(event)">?</div>
         `;
+        // Ajuste para nivel 3 (multiplicación ax=b)
+        if(currentData.op === '·') {
+            board.innerHTML = `
+                <div id="drag-item" class="draggable" draggable="true" ondragstart="drag(event)">${currentData.l}</div>
+                <div>·</div><div>x</div><div>=</div><div>${currentData.target}</div>
+                <div class="drop-zone" ondrop="drop(event)" ondragover="allow(event)">?</div>
+            `;
+        }
     }
 
-    function evAllow(e) { e.preventDefault(); }
-    function evDrag(e) { e.dataTransfer.setData("text", e.target.id); }
-    function evDrop(e) {
+    function drag(e) { e.dataTransfer.setData("text", e.target.id); }
+    function allow(e) { e.preventDefault(); }
+    function drop(e) {
         e.preventDefault();
-        const lv = learnLevels[curLearn];
         const board = document.getElementById('learn-board');
         board.innerHTML = `
-            <div>x</div><div>=</div><div>${lv.target}</div>
-            <div class="btn-op" onclick="finishLearnStep()">${lv.inv}</div><div>${lv.r}</div>
+            <div>x</div><div>=</div><div>${currentData.target}</div>
+            <div class="btn-op" onclick="resolverStep()">${currentData.inv}</div>
+            <div>${currentData.r === 'x' ? currentData.l : currentData.r}</div>
         `;
-        document.getElementById('learn-instr').innerText = `¡Bien! Ahora toca el signo ${lv.inv} para resolver.`;
-        learnStep = 2;
+        document.getElementById('learn-instr').innerText = `¡Excelente! Ahora toca el signo "${currentData.inv}" para calcular.`;
+        step = 2;
     }
 
-    function finishLearnStep() {
-        const lv = learnLevels[curLearn];
-        document.getElementById('learn-board').innerHTML = `<div>x</div><div>=</div><div style="color:var(--success)">${lv.res}</div>`;
-        document.getElementById('learn-instr').innerText = "¡Excelente! Nivel completado.";
-        
+    function resolverStep() {
+        document.getElementById('learn-board').innerHTML = `<div>x</div><div>=</div><div style="color:var(--success)">${currentData.res}</div>`;
+        document.getElementById('learn-instr').innerText = "¡Muy bien! ¡Lo lograste!";
         setTimeout(() => {
-            curLearn++;
-            if(curLearn < learnLevels.length) loadLearn();
-            else nav('scr-quiz');
+            curLvl++;
+            if(curLvl < 5) loadLearn();
+            else startQuiz();
         }, 2000);
     }
 
-    // --- LÓGICA QUIZ (ALEATORIO) ---
-    function generateQuiz() {
-        const container = document.getElementById('quiz-container');
-        container.innerHTML = "";
-        quizData = [];
-
-        for(let i=1; i<=5; i++) {
-            let a = Math.floor(Math.random() * 20) + 2;
-            let b = Math.floor(Math.random() * 50) + 21;
-            let eq, correct;
-
-            if(i===1) { eq = `x + ${a} = ${b}`; correct = b - a; }
-            if(i===2) { eq = `x - ${a} = ${b}`; correct = b + a; }
-            if(i===3) { 
-                let resMult = a * (Math.floor(Math.random()*9)+2);
-                eq = `${a}x = ${resMult}`; correct = resMult / a; 
-            }
-            if(i===4) { eq = `x / ${a} = 5`; correct = 5 * a; }
-            if(i===5) {
-                let xVal = Math.floor(Math.random()*10)+1;
-                let resC = (a * xVal) + 5;
-                eq = `${a}x + 5 = ${resC}`; correct = xVal;
-            }
-
-            quizData.push({ eq, ans: correct });
-            container.innerHTML += `
+    // --- QUIZ ---
+    function startQuiz() {
+        showScreen('scr-quiz');
+        const list = document.getElementById('quiz-list');
+        list.innerHTML = "";
+        quizItems = [];
+        for(let i=0; i<5; i++) {
+            let d = genData(i);
+            quizItems.push(d);
+            list.innerHTML += `
                 <div class="quiz-card">
-                    <strong>Nivel ${i}:</strong> ${eq}
-                    <input type="number" id="q-ans-${i}" placeholder="Tu resultado">
+                    <b>Ecuación ${i+1}:</b> ${d.l} ${d.op} ${d.r} = ${d.target}
+                    <input type="number" id="q-${i}" placeholder="Resultado de x">
                 </div>
             `;
         }
     }
 
     function evaluarQuiz() {
-        let score = 0;
-        quizData.forEach((d, idx) => {
-            const userVal = parseInt(document.getElementById(`q-ans-${idx+1}`).value);
-            if(userVal === d.ans) score++;
+        let nota = 0;
+        quizItems.forEach((d, i) => {
+            if(parseInt(document.getElementById(`q-${i}`).value) === d.res) nota++;
         });
 
-        const msgs = [
-            "¡Sigue intentando, tú puedes!", 
-            "¡Buen comienzo! Vamos por más.", 
-            "¡Vas muy bien, sigue practicando!", 
-            "¡Casi perfecto! Eres genial.", 
-            "¡Increíble! ¡Eres un Maestro de las Ecuaciones!"
-        ];
+        userData.nota = nota;
+        document.getElementById('res-score').innerText = nota + " / 5";
+        document.getElementById('res-title').innerText = nota >= 4 ? "¡Eres una estrella! 🌟" : "¡Buen esfuerzo! 💪";
+        document.getElementById('res-msg').innerText = nota >= 4 ? 
+            "Dominas las ecuaciones perfectamente. ¡Felicidades!" : 
+            "Casi lo tienes. Si practicas una vez más, serás un experto.";
         
-        document.getElementById('feedback-msg').innerText = score === 5 ? "🌟 " + msgs[4] : "✨ " + msgs[score-1 || 0];
-        document.getElementById('score-display').innerText = `${score} / 5`;
-        userData.ultimoScore = score;
-        nav('scr-results');
+        showScreen('scr-results');
     }
 
-    function enviarReporte() {
-        const url = `https://wa.me/56961410052?text=${encodeURIComponent(
-            `*MR. VEIT - REPORTE DE ECUACIONES*\nEstudiante: ${userData.n} ${userData.a}\nCurso: ${userData.c}\nResultado: ${userData.ultimoScore} de 5 correctas. ✅`
-        )}`;
-        window.open(url);
+    function enviarWA() {
+        const msg = `*MR. VEIT - REPORTE*\n👤 Estudiante: ${userData.n} ${userData.a}\n📚 Curso: ${userData.c}\n✅ Puntaje: ${userData.nota} de 5 correctas.`;
+        window.open(`https://wa.me/56961410052?text=${encodeURIComponent(msg)}`);
     }
 
-    function reiniciarTodo() {
-        curLearn = 0;
-        nav('scr-start');
+    function reiniciar() {
+        document.getElementById('nombre').value = userData.n;
+        document.getElementById('apellido').value = userData.a;
+        document.getElementById('curso').value = userData.c;
+        iniciar();
     }
 </script>
 </body>
