@@ -1,25 +1,24 @@
-<!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mr.Veit - Equilibria Pro</title>
+    <title>Mr.Veit - Equilibria Pro (Control de Ritmo)</title>
     <style>
         :root {
             --bg-warm: #fff9f2;
             --paper: #ffffff;
             --text-dark: #451a03;
-            --mrveit: #d97706; /* Ámbar cálido */
+            --mrveit: #d97706;
             --accent: #f59e0b;
             --success: #059669;
             --soft-red: #ef4444;
+            --action-blue: #3b82f6;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             background-color: var(--bg-warm);
-            background-image: radial-gradient(#e7d8c9 1px, transparent 1px);
-            background-size: 20px 20px;
             margin: 0;
             display: flex;
             justify-content: center;
@@ -36,44 +35,20 @@
             box-shadow: 0 10px 25px rgba(69, 26, 3, 0.1);
             padding: 25px;
             border: 4px solid var(--mrveit);
-            position: relative;
         }
 
-        .logo {
-            font-size: 2.2rem;
-            font-weight: 900;
-            color: var(--mrveit);
-            text-align: center;
-            margin-bottom: 5px;
-        }
-
+        .logo { font-size: 2.2rem; font-weight: 900; color: var(--mrveit); text-align: center; margin-bottom: 5px; }
         .screen { display: none; }
         .active { display: block; }
-
-        .story-box {
-            background: #fffbeb;
-            border-left: 5px solid var(--accent);
-            padding: 15px;
-            border-radius: 8px;
-            margin: 15px 0;
-            font-size: 1.1rem;
-            line-height: 1.4;
-        }
-
-        .instruction {
-            text-align: center;
-            font-weight: bold;
-            color: var(--mrveit);
-            margin-bottom: 10px;
-            min-height: 1.2em;
-        }
-
+        .story-box { background: #fffbeb; border-left: 5px solid var(--accent); padding: 15px; border-radius: 8px; margin: 15px 0; font-size: 1.1rem; }
+        .instruction { text-align: center; font-weight: bold; color: var(--mrveit); margin-bottom: 10px; min-height: 1.2em; }
+        
         .board {
             display: flex;
             justify-content: center;
             align-items: center;
-            gap: 10px;
-            height: 100px;
+            gap: 12px;
+            height: 120px;
             font-size: 2.2rem;
             background: #fffcf0;
             border-radius: 15px;
@@ -84,15 +59,15 @@
         .draggable {
             background: var(--accent);
             color: white;
-            padding: 5px 12px;
+            padding: 8px 15px;
             border-radius: 10px;
             cursor: grab;
             box-shadow: 0 4px 0 #b45309;
         }
 
         .drop-zone {
-            width: 70px;
-            height: 70px;
+            width: 80px;
+            height: 80px;
             border: 3px dashed #d6d3d1;
             border-radius: 10px;
             display: flex;
@@ -105,53 +80,19 @@
             background: var(--soft-red);
             color: white;
             border-radius: 50%;
-            width: 45px;
-            height: 45px;
+            width: 50px;
+            height: 50px;
             display: flex;
             justify-content: center;
             align-items: center;
             cursor: pointer;
-            font-size: 1.3rem;
+            font-size: 1.5rem;
             box-shadow: 0 3px 0 #991b1b;
         }
 
-        .quiz-card {
-            background: #fffcf0;
-            border: 1px solid #e7e5e4;
-            padding: 12px;
-            border-radius: 10px;
-            margin-bottom: 10px;
-        }
-
-        input {
-            width: 100%;
-            padding: 12px;
-            margin: 8px 0;
-            border-radius: 10px;
-            border: 2px solid #d6d3d1;
-            font-size: 1rem;
-            box-sizing: border-box;
-        }
-
-        button {
-            width: 100%;
-            padding: 16px;
-            background: var(--mrveit);
-            color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.1rem;
-            font-weight: bold;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: transform 0.1s;
-        }
-
-        button:active { transform: translateY(2px); }
-
+        button { width: 100%; padding: 16px; background: var(--mrveit); color: white; border: none; border-radius: 12px; font-size: 1.1rem; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .next-btn { background: var(--action-blue); margin-top: 20px; border-bottom: 4px solid #1d4ed8; }
         .wa-btn { background: #16a34a; }
-        .retry-btn { background: #78350f; margin-top: 5px; }
-
         .hidden { display: none; }
     </style>
 </head>
@@ -162,10 +103,7 @@
 
     <div id="scr-start" class="screen active">
         <h3 style="text-align:center">¡Hola! Vamos a jugar con Ecuaciones</h3>
-        <p style="text-align:center">Aprende paso a paso y diviértete.</p>
-        <input type="text" id="nombre" placeholder="Escribe tu Nombre">
-        <input type="text" id="apellido" placeholder="Escribe tu Apellido">
-        <input type="text" id="curso" placeholder="Escribe tu Curso">
+        <input type="text" id="nombre" placeholder="Tu Nombre">
         <button onclick="iniciar()">Empezar Aventura</button>
     </div>
 
@@ -173,11 +111,11 @@
         <div class="story-box" id="learn-story"></div>
         <div class="instruction" id="learn-instr"></div>
         <div class="board" id="learn-board"></div>
+        <button id="btn-next-lvl" class="next-btn hidden" onclick="avanzarNivel()">Siguiente Ejercicio →</button>
     </div>
 
     <div id="scr-quiz" class="screen">
-        <h3>🎯 Tu Turno</h3>
-        <p>Resuelve estos 5 ejercicios en tu cuaderno y anota el resultado de la X.</p>
+        <h3>🎯 Tu Turno (En el Cuaderno)</h3>
         <div id="quiz-list"></div>
         <button onclick="evaluarQuiz()">Terminar y calificar</button>
     </div>
@@ -185,39 +123,33 @@
     <div id="scr-results" class="screen" style="text-align:center">
         <h2 id="res-title"></h2>
         <div id="res-score" style="font-size: 3rem; font-weight: bold; margin: 20px 0;"></div>
-        <p id="res-msg"></p>
         <button class="wa-btn" onclick="enviarWA()">Enviar reporte a Mr.Veit</button>
-        <button class="retry-btn" onclick="reiniciar()">Jugar con otros números</button>
+        <button onclick="reiniciar()">Jugar de nuevo</button>
     </div>
 </div>
 
 <script>
     let userData = {};
     let curLvl = 0;
-    let step = 1; 
     let currentData = {};
-    let quizItems = [];
 
-    // Generador de números aleatorios que aseguren enteros
     function genData(lvl) {
-        let a = Math.floor(Math.random() * 8) + 2;
-        let x = Math.floor(Math.random() * 9) + 2;
-        let b = Math.floor(Math.random() * 15) + 5;
+        let a = Math.floor(Math.random() * 5) + 2; 
+        let x = Math.floor(Math.random() * 8) + 2; 
+        let b = Math.floor(Math.random() * 10) + 2; 
         
         switch(lvl) {
-            case 0: return { s: `Tenías x monedas, encontraste ${b} más y ahora tienes ${x+b}.`, l:'x', op:'+', r:b, target:x+b, inv:'-', res:x };
-            case 1: return { s: `Un bus lleva x personas, bajan ${a} y quedan ${b}.`, l:'x', op:'-', r:a, target:b, inv:'+', res:a+b };
-            case 2: return { s: `Compraste ${a} helados iguales por $${a*x}. ¿Cuánto costó cada uno?`, l:a, op:'·', r:'x', target:a*x, inv:'÷', res:x };
-            case 3: return { s: `Repartiste x galletas entre ${a} amigos y a cada uno le tocaron ${x}.`, l:'x', op:'÷', r:a, target:x, inv:'·', res:a*x };
-            case 4: return { s: `El doble de tu edad (${a}x) más ${b} años da ${a*x+b}.`, l:a+'x', op:'+', r:b, target:a*x+b, inv:'-', res:x };
+            case 0: return { s: `Tenías x dulces, compraste ${b} más y ahora tienes ${x+b}.`, l:'x', op:'+', r:b, target:x+b, inv:'-', res:x };
+            case 1: return { s: `En un bus x personas, bajan ${b} y quedan ${x}.`, l:'x', op:'-', r:b, target:x, inv:'+', res:x+b };
+            case 2: return { s: `Tienes ${a} cajas iguales con x lápices. En total hay ${a*x}.`, l:a, op:'·', r:'x', target:a*x, inv:'÷', res:x };
+            case 3: return { s: `Repartes x chocolates entre ${a} amigos y a cada uno le tocan ${x}.`, l:'x', op:'÷', r:a, target:x, inv:'·', res:a*x };
+            case 4: return { s: `El triple de un número (${a}x) más ${b} da como resultado ${a*x+b}.`, l:a+'x', op:'+', r:b, target:a*x+b, inv:'-', res:x };
         }
     }
 
     function iniciar() {
         userData.n = document.getElementById('nombre').value;
-        userData.a = document.getElementById('apellido').value;
-        userData.c = document.getElementById('curso').value;
-        if(!userData.n) return alert("Por favor escribe tu nombre");
+        if(!userData.n) return alert("Escribe tu nombre");
         curLvl = 0;
         showScreen('scr-learn');
         loadLearn();
@@ -228,27 +160,24 @@
         document.getElementById(id).classList.add('active');
     }
 
-    // --- APRENDIZAJE ---
     function loadLearn() {
         currentData = genData(curLvl);
-        step = 1;
+        document.getElementById('btn-next-lvl').classList.add('hidden'); // Escondemos botón hasta terminar
         document.getElementById('learn-story').innerText = currentData.s;
-        document.getElementById('learn-instr').innerText = `Paso 1: Arrastra el ${currentData.op}${currentData.r} al otro lado.`;
+        document.getElementById('learn-instr').innerText = `Arrastra el ${currentData.r} al otro lado del signo igual.`;
         
         const board = document.getElementById('learn-board');
-        board.innerHTML = `
-            <div>${currentData.l === 'x' ? 'x' : currentData.l}</div>
-            <div>${currentData.op}</div>
-            <div id="drag-item" class="draggable" draggable="true" ondragstart="drag(event)">${currentData.l === 'x' ? currentData.r : ''}</div>
-            <div>=</div>
-            <div>${currentData.target}</div>
-            <div class="drop-zone" ondrop="drop(event)" ondragover="allow(event)">?</div>
-        `;
-        // Ajuste para nivel 3 (multiplicación ax=b)
         if(currentData.op === '·') {
             board.innerHTML = `
                 <div id="drag-item" class="draggable" draggable="true" ondragstart="drag(event)">${currentData.l}</div>
                 <div>·</div><div>x</div><div>=</div><div>${currentData.target}</div>
+                <div class="drop-zone" ondrop="drop(event)" ondragover="allow(event)">?</div>
+            `;
+        } else {
+            board.innerHTML = `
+                <div>${currentData.l}</div><div>${currentData.op}</div>
+                <div id="drag-item" class="draggable" draggable="true" ondragstart="drag(event)">${currentData.r}</div>
+                <div>=</div><div>${currentData.target}</div>
                 <div class="drop-zone" ondrop="drop(event)" ondragover="allow(event)">?</div>
             `;
         }
@@ -256,73 +185,63 @@
 
     function drag(e) { e.dataTransfer.setData("text", e.target.id); }
     function allow(e) { e.preventDefault(); }
+    
     function drop(e) {
         e.preventDefault();
         const board = document.getElementById('learn-board');
+        let termAMover = (currentData.op === '·') ? currentData.l : currentData.r;
+        
         board.innerHTML = `
-            <div>x</div><div>=</div><div>${currentData.target}</div>
+            <div>${currentData.op === '·' ? 'x' : currentData.l}</div><div>=</div><div>${currentData.target}</div>
             <div class="btn-op" onclick="resolverStep()">${currentData.inv}</div>
-            <div>${currentData.r === 'x' ? currentData.l : currentData.r}</div>
+            <div>${termAMover}</div>
         `;
-        document.getElementById('learn-instr').innerText = `¡Excelente! Ahora toca el signo "${currentData.inv}" para calcular.`;
-        step = 2;
+        document.getElementById('learn-instr').innerText = `¡Bien hecho! Ahora toca el signo "${currentData.inv}" para ver el resultado.`;
     }
 
     function resolverStep() {
         document.getElementById('learn-board').innerHTML = `<div>x</div><div>=</div><div style="color:var(--success)">${currentData.res}</div>`;
-        document.getElementById('learn-instr').innerText = "¡Muy bien! ¡Lo lograste!";
-        setTimeout(() => {
-            curLvl++;
-            if(curLvl < 5) loadLearn();
-            else startQuiz();
-        }, 2000);
+        document.getElementById('learn-instr').innerText = "¡Excelente! Has resuelto la ecuación.";
+        
+        // MOSTRAR BOTÓN SIGUIENTE EN LUGAR DE PASAR AUTOMÁTICO
+        document.getElementById('btn-next-lvl').classList.remove('hidden');
     }
 
-    // --- QUIZ ---
+    function avanzarNivel() {
+        curLvl++;
+        if(curLvl < 5) loadLearn();
+        else startQuiz();
+    }
+
     function startQuiz() {
         showScreen('scr-quiz');
         const list = document.getElementById('quiz-list');
         list.innerHTML = "";
-        quizItems = [];
+        window.quizActual = [];
         for(let i=0; i<5; i++) {
             let d = genData(i);
-            quizItems.push(d);
-            list.innerHTML += `
-                <div class="quiz-card">
-                    <b>Ecuación ${i+1}:</b> ${d.l} ${d.op} ${d.r} = ${d.target}
-                    <input type="number" id="q-${i}" placeholder="Resultado de x">
-                </div>
-            `;
+            window.quizActual.push(d);
+            list.innerHTML += `<div class="story-box" style="background:white">${d.l} ${d.op} ${d.r} = ${d.target} <br> <input type="number" id="q-${i}" placeholder="Escribe el valor de x"></div>`;
         }
     }
 
     function evaluarQuiz() {
         let nota = 0;
-        quizItems.forEach((d, i) => {
+        window.quizActual.forEach((d, i) => {
             if(parseInt(document.getElementById(`q-${i}`).value) === d.res) nota++;
         });
-
         userData.nota = nota;
         document.getElementById('res-score').innerText = nota + " / 5";
-        document.getElementById('res-title').innerText = nota >= 4 ? "¡Eres una estrella! 🌟" : "¡Buen esfuerzo! 💪";
-        document.getElementById('res-msg').innerText = nota >= 4 ? 
-            "Dominas las ecuaciones perfectamente. ¡Felicidades!" : 
-            "Casi lo tienes. Si practicas una vez más, serás un experto.";
-        
+        document.getElementById('res-title').innerText = nota >= 4 ? "¡Eres un genio! 🌟" : "¡Sigue así! 💪";
         showScreen('scr-results');
     }
 
     function enviarWA() {
-        const msg = `*MR. VEIT - REPORTE*\n👤 Estudiante: ${userData.n} ${userData.a}\n📚 Curso: ${userData.c}\n✅ Puntaje: ${userData.nota} de 5 correctas.`;
+        const msg = `*MR. VEIT - REPORTE*\nEstudiante: ${userData.n}\nLogro: ${userData.nota} correctas.`;
         window.open(`https://wa.me/56961410052?text=${encodeURIComponent(msg)}`);
     }
 
-    function reiniciar() {
-        document.getElementById('nombre').value = userData.n;
-        document.getElementById('apellido').value = userData.a;
-        document.getElementById('curso').value = userData.c;
-        iniciar();
-    }
+    function reiniciar() { iniciar(); }
 </script>
 </body>
 </html>
