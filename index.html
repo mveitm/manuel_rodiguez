@@ -3,246 +3,234 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Equilibria: El Secreto de la X</title>
+    <title>Equilibria: Paso a Paso</title>
     <style>
         :root {
-            --paper-color: #fcfcfc;
-            --grid-color: #e0ebf3;
-            --math-blue: #2c5282;
-            --accent-orange: #ed8936;
-            --success-green: #48bb78;
+            --paper: #ffffff;
+            --ink: #2d3748;
+            --highlight: #ecc94b;
+            --action: #4299e1;
+            --success: #48bb78;
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--grid-color);
-            background-image: 
-                linear-gradient(var(--grid-color) 1px, transparent 1px),
-                linear-gradient(90deg, var(--grid-color) 1px, transparent 1px);
-            background-size: 25px 25px;
-            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #edf2f7;
             display: flex;
             justify-content: center;
             padding: 20px;
-            color: #333;
+            touch-action: manipulation;
         }
 
         #app-container {
-            background-color: var(--paper-color);
+            background: var(--paper);
             width: 100%;
-            max-width: 600px;
-            border-radius: 8px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            border: 1px solid #d1d5db;
-            padding: 30px;
-            position: relative;
+            max-width: 500px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            padding: 25px;
+            text-align: center;
+            border: 2px solid #cbd5e0;
         }
 
-        h1 { color: var(--math-blue); text-align: center; border-bottom: 2px solid var(--math-blue); padding-bottom: 10px; }
+        .instruction-box {
+            background: #fffaf0;
+            border: 1px solid #feebc8;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+            min-height: 60px;
+            font-weight: 500;
+            color: #744210;
+        }
 
-        .setup-section, .quiz-section { display: none; }
-        .active { display: block; }
+        .equation-row {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 40px 0;
+            min-height: 80px;
+        }
+
+        .term {
+            padding: 10px 15px;
+            border-radius: 8px;
+            transition: all 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            cursor: default;
+        }
+
+        .interactive {
+            background: var(--highlight);
+            cursor: pointer;
+            box-shadow: 0 0 15px var(--highlight);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        .hidden { display: none; }
 
         input {
             width: 100%;
             padding: 12px;
-            margin: 10px 0;
-            border: 2px solid #cbd5e0;
-            border-radius: 6px;
-            box-sizing: border-box;
-            font-size: 16px;
-        }
-
-        .balance-box {
-            background: #f7fafc;
-            border: 2px dashed var(--math-blue);
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            margin: 20px 0;
-        }
-
-        .equation-display {
-            font-size: 28px;
-            font-weight: bold;
-            letter-spacing: 2px;
-            margin-bottom: 15px;
+            margin: 8px 0;
+            border-radius: 8px;
+            border: 1px solid #cbd5e0;
+            font-size: 1rem;
         }
 
         button {
-            width: 100%;
-            padding: 15px;
-            background-color: var(--math-blue);
+            background: var(--action);
             color: white;
             border: none;
-            border-radius: 6px;
-            font-size: 18px;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.2rem;
             cursor: pointer;
-            transition: 0.3s;
-            margin-top: 10px;
+            width: 100%;
         }
 
-        button:hover { background-color: #1a365d; }
-
-        .level-card {
-            background: #fff;
-            border-left: 5px solid var(--accent-orange);
-            padding: 15px;
-            margin-bottom: 15px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-        }
-
-        .whatsapp-btn { background-color: #25D366; font-weight: bold; }
-        .whatsapp-btn:hover { background-color: #128C7E; }
-
-        .progress-dot {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: #cbd5e0;
-            margin: 0 5px;
-        }
-        .dot-done { background: var(--success-green); }
+        .wa-btn { background: #25D366; margin-top: 20px; }
     </style>
 </head>
 <body>
 
 <div id="app-container">
-    <h1>Equilibria ⚖️</h1>
-
-    <div id="step-1" class="setup-section active">
-        <h3>Identificación del Estudiante</h3>
-        <p>Antes de comenzar la misión, necesitamos tus datos:</p>
-        <input type="text" id="nombre" placeholder="Nombre" required>
-        <input type="text" id="apellido" placeholder="Apellido" required>
-        <input type="text" id="curso" placeholder="Curso (ej: 7mo Básico A)" required>
-        <button onclick="startApp()">Comenzar Aprendizaje</button>
+    <div id="setup">
+        <h2>Bienvenido a Equilibria</h2>
+        <p>Introduce tus datos para comenzar:</p>
+        <input type="text" id="nombre" placeholder="Nombre">
+        <input type="text" id="apellido" placeholder="Apellido">
+        <input type="text" id="curso" placeholder="Curso">
+        <button onclick="iniciar()">Empezar Misión</button>
     </div>
 
-    <div id="step-2" class="quiz-section">
-        <div id="progress-bar" style="text-align:center; margin-bottom: 20px;">
-            <span class="progress-dot" id="dot-0"></span>
-            <span class="progress-dot" id="dot-1"></span>
-            <span class="progress-dot" id="dot-2"></span>
-            <span class="progress-dot" id="dot-3"></span>
-            <span class="progress-dot" id="dot-4"></span>
+    <div id="game" class="hidden">
+        <div class="instruction-box" id="instruction">
+            ¡Hola! Vamos a despejar la X. Haz clic en el número que acompaña a la X.
         </div>
 
-        <div class="level-card">
-            <h4 id="level-title">Nivel 1: El Despeje</h4>
-            <p id="level-desc">Recuerda: Si algo suma, pasa al otro lado restando para mantener el equilibrio.</p>
-        </div>
+        <div class="equation-row" id="board">
+            </div>
 
-        <div class="balance-box">
-            <div class="equation-display" id="current-equation">x + 7 = 21</div>
-            <input type="number" id="user-answer" placeholder="¿Cuánto vale x?">
-            <button onclick="checkAnswer()">Validar y Continuar</button>
-        </div>
+        <div id="controls"></div>
     </div>
 
-    <div id="step-3" class="quiz-section">
-        <h3>¡Misión Cumplida! 🎓</h3>
-        <p>Has completado los 5 niveles de equilibrio algebraico.</p>
-        <div id="results-summary" style="margin-bottom: 20px;"></div>
-        <button class="whatsapp-btn" onclick="sendToWhatsApp()">Enviar Resultados al Profesor</button>
+    <div id="results" class="hidden">
+        <h2>¡Excelente Trabajo!</h2>
+        <p>Has completado todos los pasos con éxito.</p>
+        <button class="wa-btn" onclick="enviarReporte()">Enviar progreso por WhatsApp</button>
     </div>
 </div>
 
 <script>
     const levels = [
-        { title: "Nivel 1: Sumas y Restas", eq: "x + 12 = 30", ans: 18, desc: "Aísla la x restando 12 en ambos lados." },
-        { title: "Nivel 2: Multiplicaciones", eq: "3x = 21", ans: 7, desc: "Si el 3 multiplica a la x, divídelo en el otro lado." },
-        { title: "Nivel 3: Operaciones Combinadas", eq: "2x + 5 = 17", ans: 6, desc: "Primero resta el 5, luego divide por 2." },
-        { title: "Nivel 4: X en ambos lados", eq: "5x - 4 = 3x + 6", ans: 5, desc: "Lleva las x a un lado y los números al otro." },
-        { title: "Nivel 5: Desafío de Fracciones", eq: "x/2 + 1/4 = 3/4", ans: 1, desc: "Multiplica todo por 4 o resta las fracciones primero." }
+        { id: 1, t1: 'x', op: '+', t2: '12', res: '30', final: 18, type: 'suma' },
+        { id: 2, t1: 'x', op: '-', t2: '8', res: '20', final: 28, type: 'resta' },
+        { id: 3, t1: '3', op: '*', t2: 'x', res: '21', final: 7, type: 'mult' },
+        { id: 4, t1: 'x', op: '/', t2: '4', res: '5', final: 20, type: 'div' },
+        { id: 5, t1: '2x', op: '+', t2: '6', res: '16', final: 5, type: 'mixta' }
     ];
 
-    let currentLevel = 0;
-    let studentData = {};
-    let scores = [];
+    let currentLvl = 0;
+    let step = 0;
+    let userData = {};
 
-    function startApp() {
-        studentData.nombre = document.getElementById('nombre').value;
-        studentData.apellido = document.getElementById('apellido').value;
-        studentData.curso = document.getElementById('curso').value;
-
-        if(!studentData.nombre || !studentData.apellido || !studentData.curso) {
-            alert("Por favor, completa todos los campos.");
-            return;
-        }
-
-        document.getElementById('step-1').classList.remove('active');
-        document.getElementById('step-2').classList.add('active');
-        loadLevel();
-    }
-
-    function loadLevel() {
-        const level = levels[currentLevel];
-        document.getElementById('level-title').innerText = level.title;
-        document.getElementById('level-desc').innerText = level.desc;
-        document.getElementById('current-equation').innerText = level.eq;
-        document.getElementById('user-answer').value = "";
-        document.getElementById(`dot-${currentLevel}`).classList.add('dot-done');
-    }
-
-    function checkAnswer() {
-        const userVal = parseFloat(document.getElementById('user-answer').value);
-        const correctVal = levels[currentLevel].ans;
-
-        if (isNaN(userVal)) {
-            alert("Ingresa un número para continuar.");
-            return;
-        }
-
-        scores.push({
-            level: currentLevel + 1,
-            equation: levels[currentLevel].eq,
-            correct: userVal === correctVal,
-            given: userVal
-        });
-
-        currentLevel++;
-
-        if (currentLevel < levels.length) {
-            loadLevel();
-        } else {
-            showFinalResults();
-        }
-    }
-
-    function showFinalResults() {
-        document.getElementById('step-2').classList.remove('active');
-        document.getElementById('step-3').classList.add('active');
+    function iniciar() {
+        userData.nombre = document.getElementById('nombre').value;
+        userData.apellido = document.getElementById('apellido').value;
+        userData.curso = document.getElementById('curso').value;
+        if(!userData.nombre) return alert("Escribe tu nombre");
         
-        let summaryHtml = "<ul>";
-        scores.forEach(s => {
-            summaryHtml += `<li><strong>${s.equation}</strong>: ${s.correct ? '✅ Correcto' : '❌ Error (Puso: '+s.given+')'}</li>`;
-        });
-        summaryHtml += "</ul>";
-        document.getElementById('results-summary').innerHTML = summaryHtml;
+        document.getElementById('setup').classList.add('hidden');
+        document.getElementById('game').classList.remove('hidden');
+        renderLevel();
     }
 
-    function sendToWhatsApp() {
-        const phone = "56961410052";
-        let message = `*EVALUACIÓN EQUILIBRIA*\n`;
-        message += `--------------------------\n`;
-        message += `👤 *Estudiante:* ${studentData.nombre} ${studentData.apellido}\n`;
-        message += `📚 *Curso:* ${studentData.curso}\n`;
-        message += `--------------------------\n`;
+    function renderLevel() {
+        const lvl = levels[currentLvl];
+        const board = document.getElementById('board');
+        step = 1;
         
-        scores.forEach(s => {
-            message += `Nivel ${s.level}: ${s.equation} -> ${s.correct ? '✅' : '❌ (Respuesta: '+s.given+')'}\n`;
-        });
+        board.innerHTML = `
+            <div id="term-left" class="term">${lvl.t1}</div>
+            <div id="op" class="term">${lvl.op}</div>
+            <div id="term-move" class="term interactive" onclick="handleStep()">${lvl.t2}</div>
+            <div class="term">=</div>
+            <div id="result" class="term">${lvl.res}</div>
+        `;
+        document.getElementById('instruction').innerText = `Paso 1: Para dejar sola a la X, toca el ${lvl.t2} para moverlo.`;
+    }
 
-        const totalCorrect = scores.filter(s => s.correct).length;
-        message += `--------------------------\n`;
-        message += `📊 *Puntaje Total:* ${totalCorrect} de 5`;
+    function handleStep() {
+        const lvl = levels[currentLvl];
+        const op = document.getElementById('op');
+        const tMove = document.getElementById('term-move');
+        const res = document.getElementById('result');
+        const instr = document.getElementById('instruction');
 
-        const encodedMsg = encodeURIComponent(message);
-        window.open(`https://wa.me/${phone}?text=${encodedMsg}`, '_blank');
+        if (step === 1) {
+            // Mover y cambiar signo
+            tMove.classList.remove('interactive');
+            op.style.opacity = '0';
+            
+            setTimeout(() => {
+                op.innerText = '='; // El igual se queda, el operador se mueve
+                const newOp = lvl.op === '+' ? '-' : (lvl.op === '-' ? '+' : (lvl.op === '*' ? '÷' : '•'));
+                
+                tMove.style.transform = 'translateX(100px)';
+                tMove.style.opacity = '0';
+                
+                setTimeout(() => {
+                    tMove.style.transform = 'translateX(0)';
+                    tMove.innerText = newOp + ' ' + lvl.t2;
+                    tMove.style.opacity = '1';
+                    tMove.classList.add('interactive');
+                    tMove.style.color = 'red';
+                    instr.innerText = `¡Bien! El ${lvl.op}${lvl.t2} pasó al otro lado como ${newOp}${lvl.t2}. Ahora tócalo para calcular.`;
+                    step = 2;
+                }, 500);
+            }, 300);
+
+        } else if (step === 2) {
+            // Calcular final
+            tMove.classList.remove('interactive');
+            res.innerText = lvl.final;
+            tMove.style.opacity = '0';
+            op.style.opacity = '0';
+            instr.innerText = `¡Logrado! X es igual a ${lvl.final}.`;
+            
+            setTimeout(() => {
+                if (currentLvl < levels.length - 1) {
+                    currentLvl++;
+                    renderLevel();
+                } else {
+                    finalizar();
+                }
+            }, 2000);
+        }
+    }
+
+    function finalizar() {
+        document.getElementById('game').classList.add('hidden');
+        document.getElementById('results').classList.remove('hidden');
+    }
+
+    function enviarReporte() {
+        const tel = "56961410052";
+        const msg = `*REPORTE EQUILIBRIA (TEA)*\n\n` +
+                    `Estudiante: ${userData.nombre} ${userData.apellido}\n` +
+                    `Curso: ${userData.curso}\n` +
+                    `Estado: ¡Completó los 5 niveles de guía interactiva! ✅`;
+        window.open(`https://wa.me/${tel}?text=${encodeURIComponent(msg)}`);
     }
 </script>
-
 </body>
 </html>
