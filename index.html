@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mr.Veit - Equilibria Pro V5</title>
+    <title>Mr.Veit - Equilibria Pro V6</title>
     <style>
         :root {
             --bg-warm: #fffdfa;
@@ -27,8 +27,11 @@
         .screen { display: none; animation: fadeIn 0.4s ease; }
         .active { display: block; }
 
-        .menu-grid { display: grid; gap: 12px; margin-top: 20px; }
-        .btn-topic { background: var(--mrveit); color: white; border: none; padding: 18px; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1.1rem; margin-bottom: 10px; }
+        .menu-grid { display: grid; gap: 12px; margin-top: 15px; }
+        .btn-topic { background: var(--mrveit); color: white; border: none; padding: 18px; border-radius: 12px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1.1rem; margin-bottom: 5px; transition: 0.2s; }
+        .btn-topic:hover { opacity: 0.9; transform: scale(0.98); }
+        .btn-alt { background: white; color: var(--text-dark); border: 2px solid var(--trace); padding: 15px; border-radius: 12px; font-weight: 600; cursor: pointer; text-align: left; font-size: 1rem; }
+        .btn-alt:hover { border-color: var(--accent); background: #fffbeb; }
 
         .story-box { background: #fffbeb; border-left: 5px solid var(--accent); padding: 15px; border-radius: 8px; margin-bottom: 15px; }
         .history-container { display: flex; flex-direction: column; gap: 10px; margin: 20px 0; padding: 15px; background: #fdfbf7; border-radius: 15px; border: 1px solid #eee; min-height: 80px; }
@@ -37,13 +40,12 @@
         .step-row.current { background: #fffbeb; border-radius: 10px; border: 2px solid var(--accent); }
         .step-row.old { opacity: 0.4; font-size: 1.1rem; border-bottom: 1px dashed var(--trace); }
 
-        /* Fracción Vertical Estricta */
         .fraction { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; line-height: 1.1; margin: 0 5px; }
         .num { border-bottom: 2px solid var(--text-dark); padding: 0 8px; width: 100%; text-align: center; min-width: 30px; }
         .den { padding: 0 8px; width: 100%; text-align: center; }
 
-        .draggable { background: var(--accent); color: white; padding: 4px 12px; border-radius: 6px; cursor: pointer; box-shadow: 0 3px 0 #b45309; }
-        .btn-op { background: var(--danger); color: white; padding: 4px 12px; border-radius: 8px; cursor: pointer; border: none; font-size: 1.1rem; }
+        .draggable { background: var(--accent); color: white; padding: 4px 12px; border-radius: 6px; cursor: pointer; }
+        .btn-op { background: var(--danger); color: white; padding: 4px 12px; border-radius: 8px; cursor: pointer; border: none; }
         
         input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #ccc; font-size: 1rem; }
         .feedback { font-weight: bold; padding: 12px; border-radius: 8px; margin-top: 10px; text-align: center; }
@@ -51,6 +53,8 @@
         .wrong { background: #fee2e2; color: #991b1b; border: 1px solid #ef4444; }
 
         .report-card { background: #fff; border: 1px solid #eee; padding: 15px; border-radius: 12px; margin-bottom: 10px; }
+        .sol-detail { background: #f8fafc; padding: 10px; border-radius: 8px; margin-top: 10px; display: none; font-family: monospace; border-left: 3px solid var(--action-blue); white-space: pre-wrap; }
+
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .hidden { display: none; }
     </style>
@@ -64,7 +68,7 @@
     </div>
 
     <div id="scr-welcome" class="screen active">
-        <h3 style="text-align:center">¡Bienvenido! Aprende Matemáticas paso a paso.</h3>
+        <h3 style="text-align:center">¡Hola! Vamos a aprender Matemáticas paso a paso.</h3>
         <input type="text" id="user-name" placeholder="Tu nombre">
         <button class="btn-topic" onclick="goToMenu()">Ingresar</button>
     </div>
@@ -80,8 +84,8 @@
     <div id="scr-topic-menu" class="screen">
         <h2 id="topic-title" style="text-align:center"></h2>
         <div class="menu-grid">
-            <button class="btn-topic" onclick="startMode('aprende')">Aprendamos (Visual)</button>
-            <button class="btn-topic" style="background:var(--action-blue)" onclick="startMode('practica')">Practiquemos (Escrito)</button>
+            <button class="btn-topic" onclick="startMode('aprende')">Aprendamos (Interactiva)</button>
+            <button class="btn-topic" style="background:var(--action-blue)" onclick="startMode('practica')">Practiquemos (Alternativas)</button>
             <button class="btn-topic" style="background:var(--success)" onclick="startMode('evalua')">Evaluación Final</button>
         </div>
     </div>
@@ -97,10 +101,9 @@
     <div id="scr-practica" class="screen">
         <div class="story-box" id="practica-story"></div>
         <div id="practica-history" class="history-container"></div>
-        <div id="practica-input-zone">
-            <p id="practica-prompt" style="font-weight:bold; text-align:center"></p>
-            <input type="text" id="practica-input" placeholder="Escribe el siguiente paso...">
-            <button class="btn-topic" onclick="checkPracticaStep()">Verificar</button>
+        <div id="practica-zone">
+            <p style="font-weight:bold; text-align:center">¿Cuál es el siguiente paso?</p>
+            <div id="practica-options" class="menu-grid"></div>
             <div id="practica-feedback" class="feedback hidden"></div>
         </div>
         <button id="btn-next-practica" class="btn-topic hidden" onclick="nextPractica()">Siguiente Ejercicio →</button>
@@ -108,8 +111,9 @@
 
     <div id="scr-evalua" class="screen">
         <h3 style="text-align:center">Evaluación</h3>
+        <p style="text-align:center; font-size:0.9rem">Resuelve en tu cuaderno y anota solo el valor final de x.</p>
         <div id="evalua-container"></div>
-        <button class="btn-topic" style="background:var(--success)" onclick="gradeEval()">Terminar</button>
+        <button class="btn-topic" style="background:var(--success)" onclick="gradeEval()">Finalizar</button>
     </div>
 
     <div id="scr-report" class="screen">
@@ -117,38 +121,36 @@
         <div id="report-score" style="text-align:center; font-size: 3rem; font-weight:bold"></div>
         <div id="report-details" style="margin-top:20px"></div>
         <button class="btn-topic" onclick="sendWA()">Enviar al Profesor</button>
+        <button class="btn-topic" style="background:#64748b" onclick="showScreen('scr-main-menu')">Volver al Inicio</button>
     </div>
 </div>
 
 <script>
     let state = { name:"", topic:"", mode:"", level:0, currentEx:null, step:0, quiz:[] };
 
-    // --- GENERADOR ALEATORIO ---
     function getEx(topic, lvl) {
         const r = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-        
         if(topic === 'ecuaciones') {
             let x = r(2, 10);
             switch(lvl) {
-                case 0: let a0 = r(3, 15); return { s:`Tenías x dulces, compraste ${a0}. Ahora tienes ${x+a0}.`, expr:`x + ${a0} = ${x+a0}`, steps:[`x = ${x+a0} - ${a0}`, `${x}`], res:x, type:'simple', op:'+', inv:'-', r:a0, target:x+a0 };
-                case 1: let a1 = r(2, 6); return { s:`${a1} cajas iguales tienen x lápices cada una. Hay ${a1*x} en total.`, expr:`${a1}x = ${a1*x}`, steps:[`x = ${a1*x} / ${a1}`, `${x}`], res:x, type:'div', l:a1, target:a1*x };
-                case 2: let a2 = r(2, 5), b2 = r(2, 10); return { s:`El cuádruple de x más ${b2} es ${a2*x+b2}.`, expr:`${a2}x + ${b2} = ${a2*x+b2}`, steps:[`${a2}x = ${a2*x+b2} - ${b2}`, `${a2}x = ${a2*x}`, `x = ${a2*x} / ${a2}`, `${x}`], res:x, type:'c_mult', a:a2, r:b2, target:a2*x+b2 };
-                case 3: let a3 = r(2, 6); return { s:`Dividiste x en ${a3} partes y obtuviste ${x}.`, expr:`x / ${a3} = ${x}`, steps:[`x = ${x} * ${a3}`, `${x*a3}`], res:x*a3, type:'mult', l:a3, target:x };
-                case 4: let a4 = r(2, 5), b4 = r(2, 8); return { s:`La parte dividida por ${a4} de x, más ${b4}, es ${x+b4}.`, expr:`x / ${a4} + ${b4} = ${x+b4}`, steps:[`x / ${a4} = ${x+b4} - ${b4}`, `x / ${a4} = ${x}`, `x = ${x} * ${a4}`, `${x*a4}`], res:x*a4, type:'c_div', l:a4, r:b4, target:x+b4 };
+                case 0: let a0 = r(3, 15); return { s:`Tenías x dulces, compraste ${a0}. Ahora tienes ${x+a0}.`, expr:`x + ${a0} = ${x+a0}`, steps:[`x = ${x+a0} - ${a0}`, `x = ${x}`], res:x, type:'simple', op:'+', inv:'-', r:a0, target:x+a0 };
+                case 1: let a1 = r(2, 6); return { s:`${a1} cajas iguales tienen x lápices cada una. Total: ${a1*x}.`, expr:`${a1}x = ${a1*x}`, steps:[`x = ${a1*x} / ${a1}`, `x = ${x}`], res:x, type:'div', l:a1, target:a1*x };
+                case 2: let a2 = r(2, 4), b2 = r(2, 10); return { s:`El múltiplo ${a2} de x más ${b2} es ${a2*x+b2}.`, expr:`${a2}x + ${b2} = ${a2*x+b2}`, steps:[`${a2}x = ${a2*x+b2} - ${b2}`, `${a2}x = ${a2*x}`, `x = ${a2*x} / ${a2}`, `x = ${x}`], res:x, type:'c_mult', a:a2, r:b2, target:a2*x+b2 };
+                case 3: let a3 = r(2, 6); return { s:`Dividiste x en ${a3} partes y obtuviste ${x}.`, expr:`x / ${a3} = ${x}`, steps:[`x = ${x} * ${a3}`, `x = ${x*a3}`], res:x*a3, type:'mult', l:a3, target:x };
+                case 4: let a4 = r(2, 5), b4 = r(2, 8); return { s:`La parte dividida por ${a4} de x, más ${b4}, es ${x+b4}.`, expr:`x / ${a4} + ${b4} = ${x+b4}`, steps:[`x / ${a4} = ${x+b4} - ${b4}`, `x / ${a4} = ${x}`, `x = ${x} * ${a4}`, `x = ${x*a4}`], res:x*a4, type:'c_div', l:a4, r:b4, target:x+b4 };
             }
         } else {
-            let x = r(2, 12);
+            let x = r(2, 15);
             switch(lvl) {
-                case 0: return { s:`¿Qué números tienen distancia ${x} al cero?`, expr:`|x| = ${x}`, steps:[`${x}`, `-${x}`], res:x, tut:"El valor absoluto |a| es el valor numérico sin signo." };
-                case 1: let b1 = r(2, 5); return { s:`Distancia de x al cero más ${b1} es ${x+b1}.`, expr:`|x| + ${b1} = ${x+b1}`, steps:[`|x| = ${x+b1} - ${b1}`, `${x}`], res:x };
-                case 2: let b2 = r(1, 10); return { s:`La distancia entre x y ${b2} es ${x}.`, expr:`|x - ${b2}| = ${x}`, steps:[`x - ${b2} = ${x}`, `${x+b2}`], res:x+b2 };
-                case 3: let a3 = 2; return { s:`El doble de la distancia de x al origen es ${a3*x}.`, expr:`${a3}|x| = ${a3*x}`, steps:[`|x| = ${a3*x} / ${a3}`, `${x}`], res:x };
-                case 4: let a4 = 2, b4 = r(1, 5); return { s:`Dos veces la distancia entre x y ${b4} es ${a4*x}.`, expr:`${a4}|x - ${b4}| = ${a4*x}`, steps:[`|x - ${b4}| = ${x}`, `x - ${b4} = ${x}`, `${x+b4}`], res:x+b4 };
+                case 0: return { s:`¿Qué números tienen distancia ${x} al cero?`, expr:`|x| = ${x}`, steps:[`x = ${x}`, `x = -${x}`], res:x, tut:"Basado en la imagen: El valor absoluto |a| es el valor numérico sin signo." };
+                case 1: let b1 = r(2, 5); return { s:`Distancia de x al cero más ${b1} es ${x+b1}.`, expr:`|x| + ${b1} = ${x+b1}`, steps:[`|x| = ${x+b1} - ${b1}`, `x = ${x}`], res:x };
+                case 2: let b2 = r(1, 10); return { s:`La distancia entre x y ${b2} es ${x}.`, expr:`|x - ${b2}| = ${x}`, steps:[`x - ${b2} = ${x}`, `x = ${x+b2}`], res:x+b2 };
+                case 3: let a3 = 2; return { s:`El doble de la distancia de x al origen es ${a3*x}.`, expr:`${a3}|x| = ${a3*x}`, steps:[`|x| = ${a3*x} / ${a3}`, `x = ${x}`], res:x };
+                case 4: let a4 = 2, b4 = r(1, 5); return { s:`Dos veces la distancia entre x y ${b4} es ${a4*x}.`, expr:`${a4}|x - ${b4}| = ${a4*x}`, steps:[`|x - ${b4}| = ${x}`, `x - ${b4} = ${x}`, `x = ${x+b4}`], res:x+b4 };
             }
         }
     }
 
-    // --- NAVEGACIÓN ---
     function showScreen(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
@@ -162,16 +164,8 @@
         else showScreen('scr-topic-menu');
     }
 
-    function goToMenu() {
-        state.name = document.getElementById('user-name').value || "Estudiante";
-        showScreen('scr-main-menu');
-    }
-
-    function openTopic(t) {
-        state.topic = t;
-        document.getElementById('topic-title').innerText = t === 'ecuaciones' ? "Ecuaciones" : "Valor Absoluto";
-        showScreen('scr-topic-menu');
-    }
+    function goToMenu() { state.name = document.getElementById('user-name').value || "Estudiante"; showScreen('scr-main-menu'); }
+    function openTopic(t) { state.topic = t; document.getElementById('topic-title').innerText = t === 'ecuaciones' ? "Ecuaciones" : "Valor Absoluto"; showScreen('scr-topic-menu'); }
 
     function startMode(m) {
         state.level = 0; state.mode = m;
@@ -180,7 +174,7 @@
         else renderEval();
     }
 
-    // --- APRENDE (INTERACTIVO) ---
+    // --- MODO APRENDE ---
     function loadAprende() {
         state.currentEx = getEx(state.topic, state.level);
         state.subStep = 0;
@@ -191,19 +185,16 @@
         
         const tut = document.getElementById('tut-box');
         if(state.topic === 'valor-absoluto' && state.level === 0) {
-            tut.innerHTML = `💡 <strong>Concepto:</strong> El valor absoluto de un número <i>a</i> se escribe como |a| y es su valor numérico sin signo. Ej: |-1|=1, |6|=6.`;
+            tut.innerHTML = `💡 El valor absoluto es el valor numérico sin signo. <br> Ejemplos: |-1|=1, |3.4|=3.4`;
             tut.classList.remove('hidden');
         } else tut.classList.add('hidden');
-
         renderAprendeRow();
     }
 
     function renderAprendeRow() {
         const ex = state.currentEx;
-        const hist = document.getElementById('aprende-history');
         const row = document.createElement('div');
         row.className = "step-row current"; row.id = "active-step";
-
         if(state.topic === 'ecuaciones') {
             document.getElementById('aprende-instr').innerText = "Toca el número naranja.";
             if(ex.type === 'simple') row.innerHTML = `<div>x</div><div>${ex.op}</div><div class="draggable" onclick="moveSimple()">${ex.r}</div><div>=</div><div>${ex.target}</div>`;
@@ -221,67 +212,85 @@
             document.getElementById('aprende-instr').innerText = "Presiona Resolver:";
             row.innerHTML = `<div>${ex.expr}</div> <button class="btn-op" onclick="finishAprende()">Resolver</button>`;
         }
-        hist.appendChild(row);
+        document.getElementById('aprende-history').appendChild(row);
     }
 
-    function moveSimple() { fixOld(); const ex = state.currentEx; addRow(`<div>x</div><div>=</div><div>${ex.target}</div><button class="btn-op" onclick="finishAprende()">${ex.inv}</button><div>${ex.r}</div>`); }
-    function moveDiv() { fixOld(); const ex = state.currentEx; addRow(`<div>x</div><div>=</div><div class="fraction"><span class="num">${ex.target}</span><span class="den">${ex.l}</span></div><button class="btn-op" onclick="finishAprende()">÷</button>`); }
-    function moveMult() { fixOld(); const ex = state.currentEx; addRow(`<div>x</div><div>=</div><div>${ex.target}</div><button class="btn-op" onclick="finishAprende()">·</button><div>${ex.l}</div>`); }
+    function moveSimple() { fixOld(); addRow(`<div>x</div><div>=</div><div>${state.currentEx.target}</div><button class="btn-op" onclick="finishAprende()">${state.currentEx.inv}</button><div>${state.currentEx.r}</div>`); }
+    function moveDiv() { fixOld(); addRow(`<div>x</div><div>=</div><div class="fraction"><span class="num">${state.currentEx.target}</span><span class="den">${state.currentEx.l}</span></div><button class="btn-op" onclick="finishAprende()">÷</button>`); }
+    function moveMult() { fixOld(); addRow(`<div>x</div><div>=</div><div>${state.currentEx.target}</div><button class="btn-op" onclick="finishAprende()">·</button><div>${state.currentEx.l}</div>`); }
     function moveC1() { fixOld(); state.subStep=1; addRow(`<div>${state.currentEx.expr.split('+')[0]}</div><div>=</div><div>${state.currentEx.target}</div><button class="btn-op" onclick="renderAprendeRow()">-</button><div>${state.currentEx.r}</div>`); }
     function moveC2(v) { fixOld(); if(state.currentEx.type ==='c_mult') addRow(`<div>x</div><div>=</div><div class="fraction"><span class="num">${v}</span><span class="den">${state.currentEx.a}</span></div><button class="btn-op" onclick="finishAprende()">÷</button>`); else addRow(`<div>x</div><div>=</div><div>${v}</div><button class="btn-op" onclick="finishAprende()">·</button><div>${state.currentEx.l}</div>`); }
-
     function fixOld() { const s = document.getElementById('active-step'); if(s){ s.id=""; s.className="step-row old";} }
     function addRow(html) { const r = document.createElement('div'); r.className="step-row current"; r.id="active-step"; r.innerHTML=html; document.getElementById('aprende-history').appendChild(r); }
     function finishAprende() { fixOld(); addRow(`<div style="color:var(--success)">x = ${state.currentEx.res}</div>`); document.getElementById('btn-next-aprende').classList.remove('hidden'); }
     function nextAprende() { state.level++; if(state.level < 5) loadAprende(); else showScreen('scr-topic-menu'); }
 
-    // --- PRACTICA ---
+    // --- MODO PRÁCTICA (ALTERNATIVAS) ---
     function loadPractica() {
         state.currentEx = getEx(state.topic, state.level);
         state.step = 0;
         showScreen('scr-practica');
         document.getElementById('practica-history').innerHTML = `<div class="step-row current">${state.currentEx.expr}</div>`;
         document.getElementById('practica-story').innerText = state.currentEx.s;
-        document.getElementById('practica-prompt').innerHTML = state.topic === 'valor-absoluto' ? "Usa las barras | | si es necesario." : "Escribe el siguiente paso:";
         document.getElementById('btn-next-practica').classList.add('hidden');
-        document.getElementById('practica-input-zone').classList.remove('hidden');
+        document.getElementById('practica-zone').classList.remove('hidden');
         document.getElementById('practica-feedback').classList.add('hidden');
+        renderAlts();
     }
 
-    function checkPracticaStep() {
-        const raw = document.getElementById('practica-input').value.toLowerCase().replace(/\s/g, '');
-        const correct = state.currentEx.steps[state.step].toLowerCase().replace(/\s/g, '');
-        const feed = document.getElementById('practica-feedback');
+    function renderAlts() {
+        const correct = state.currentEx.steps[state.step];
+        const alts = [correct, genDistractor(correct), genDistractor(correct)];
+        alts.sort(() => Math.random() - 0.5);
+        const optCont = document.getElementById('practica-options');
+        optCont.innerHTML = "";
+        alts.forEach(a => {
+            const b = document.createElement('button');
+            b.className = "btn-alt";
+            b.innerText = a;
+            b.onclick = () => checkAlt(a, correct);
+            optCont.appendChild(b);
+        });
+    }
 
-        if(raw === correct || (state.step === state.currentEx.steps.length-1 && raw === state.currentEx.res.toString())) {
-            feed.innerText = "¡Correcto!"; feed.className = "feedback correct";
+    function genDistractor(correct) {
+        if(correct.includes(' - ')) return correct.replace(' - ', ' + ');
+        if(correct.includes(' / ')) return correct.replace(' / ', ' * ');
+        if(correct.includes(' * ')) return correct.replace(' * ', ' / ');
+        if(correct.startsWith('x = ')) return `x = ${parseInt(correct.split('=')[1]) + 5}`;
+        return `x = 10`;
+    }
+
+    function checkAlt(selected, correct) {
+        const feed = document.getElementById('practica-feedback');
+        if(selected === correct) {
+            feed.innerText = "¡Excelente!"; feed.className = "feedback correct";
             const hist = document.getElementById('practica-history');
             hist.lastChild.className = "step-row old";
-            const row = document.createElement('div'); row.className = "step-row current"; row.innerText = state.currentEx.steps[state.step];
+            const row = document.createElement('div'); row.className = "step-row current"; row.innerText = correct;
             hist.appendChild(row);
             state.step++;
-            document.getElementById('practica-input').value = "";
-            if(state.step >= state.currentEx.steps.length) {
-                document.getElementById('practica-input-zone').classList.add('hidden');
+            if(state.step < state.currentEx.steps.length) renderAlts();
+            else {
+                document.getElementById('practica-zone').classList.add('hidden');
                 document.getElementById('btn-next-practica').classList.remove('hidden');
             }
         } else {
-            feed.innerText = `Incorrecto. El paso era: ${state.currentEx.steps[state.step]}`;
-            feed.className = "feedback wrong";
+            feed.innerText = `Incorrecto. El paso correcto era: ${correct}`; feed.className = "feedback wrong";
         }
         feed.classList.remove('hidden');
     }
 
     function nextPractica() { state.level++; if(state.level < 5) loadPractica(); else showScreen('scr-topic-menu'); }
 
-    // --- EVALUA ---
+    // --- EVALUACIÓN Y REPORTE ---
     function renderEval() {
         showScreen('scr-evalua');
         const cont = document.getElementById('evalua-container');
         cont.innerHTML = ""; state.quiz = [];
         for(let i=0; i<5; i++) {
             let ex = getEx(state.topic, i); state.quiz.push(ex);
-            cont.innerHTML += `<div class="report-card"><strong>Nivel ${i+1}:</strong> ${ex.s}<br>${ex.expr}<br><input type="number" id="ev-${i}"></div>`;
+            cont.innerHTML += `<div class="report-card"><strong>Nivel ${i+1}:</strong> ${ex.s}<br>${ex.expr}<br><input type="number" id="ev-${i}" placeholder="Escribe tu x"></div>`;
         }
     }
 
@@ -290,15 +299,30 @@
         state.quiz.forEach((ex, i) => {
             let val = document.getElementById(`ev-${i}`).value;
             let ok = parseInt(val) === ex.res; if(ok) nota++;
-            details.innerHTML += `<div class="report-card">${ok?'✅':'❌'} <strong>Nivel ${i+1}:</strong> ${ex.expr} <br> Tuya: ${val || '?'} | Correcta: ${ex.res}</div>`;
+            details.innerHTML += `
+                <div class="report-card">
+                    <div style="display:flex; justify-content:space-between">
+                        <strong>Ejercicio ${i+1}</strong>
+                        <span>${ok?'✅':'❌'}</span>
+                    </div>
+                    <p>${ex.expr}</p>
+                    <p>Tu respuesta: x = ${val || '?'} | Correcta: x = ${ex.res}</p>
+                    <button class="btn-op" style="background:var(--action-blue); font-size:0.8rem; width:auto" onclick="toggleSol(${i})">Ver Solución Paso a Paso</button>
+                    <div id="sol-${i}" class="sol-detail">${ex.steps.join('\n')}</div>
+                </div>`;
         });
         state.finalNota = nota;
         document.getElementById('report-score').innerText = `${nota}/5`;
         showScreen('scr-report');
     }
 
+    function toggleSol(i) {
+        const el = document.getElementById(`sol-${i}`);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    }
+
     function sendWA() {
-        const msg = `*EQUILIBRIA REPORT*\nEstudiante: ${state.name}\nTema: ${state.topic}\nNota: ${state.finalNota}/5`;
+        const msg = `*EQUILIBRIA V6*\nEstudiante: ${state.name}\nTema: ${state.topic}\nNota: ${state.finalNota}/5`;
         window.open(`https://wa.me/56961410052?text=${encodeURIComponent(msg)}`);
     }
 </script>
