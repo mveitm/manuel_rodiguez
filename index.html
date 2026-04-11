@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Mr.Veit - Equilibria Pro V2</title>
+    <title>Mr.Veit - Equilibria Pro V3</title>
     <style>
         :root {
             --bg-warm: #fffdfa;
@@ -34,33 +34,29 @@
             display: flex; align-items: center; justify-content: space-between; color: var(--text-dark);
             box-shadow: 0 4px 0 var(--trace);
         }
-        .btn-main:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 6px 0 var(--trace); }
-        .btn-main:active { transform: translateY(2px); box-shadow: 0 0 0 var(--trace); }
+        .btn-main:hover { border-color: var(--accent); transform: translateY(-2px); }
 
-        .btn-topic { 
-            background: var(--mrveit); color: white; border: none; padding: 18px; 
-            border-radius: 12px; font-weight: bold; cursor: pointer; margin-bottom: 10px;
-            width: 100%; font-size: 1.1rem;
-        }
+        .btn-topic { background: var(--mrveit); color: white; border: none; padding: 18px; border-radius: 12px; font-weight: bold; cursor: pointer; margin-bottom: 10px; width: 100%; font-size: 1.1rem; }
 
         .story-box { background: #fffbeb; border-left: 5px solid var(--accent); padding: 15px; border-radius: 8px; margin-bottom: 15px; }
-        .history-container { display: flex; flex-direction: column; gap: 10px; margin: 20px 0; padding: 15px; background: #fdfbf7; border-radius: 15px; border: 1px solid #eee; }
+        .history-container { display: flex; flex-direction: column; gap: 10px; margin: 20px 0; padding: 15px; background: #fdfbf7; border-radius: 15px; border: 1px solid #eee; min-height: 100px; }
         
-        .step-row { display: flex; justify-content: center; align-items: center; gap: 15px; font-size: 1.6rem; padding: 10px; border-bottom: 1px dashed var(--trace); }
-        .step-row.current { border-bottom: none; background: #fffbeb; border-radius: 10px; border: 2px solid var(--accent); }
-        .step-row.old { opacity: 0.5; font-size: 1.2rem; }
+        .step-row { display: flex; justify-content: center; align-items: center; gap: 12px; font-size: 1.6rem; padding: 10px; }
+        .step-row.current { background: #fffbeb; border-radius: 10px; border: 2px solid var(--accent); }
+        .step-row.old { opacity: 0.5; font-size: 1.2rem; border-bottom: 1px dashed var(--trace); }
 
-        /* Estilos Interactivos */
-        .draggable { background: var(--accent); color: white; padding: 5px 12px; border-radius: 8px; cursor: grab; }
-        .drop-zone { width: 60px; height: 60px; border: 2px dashed #cbd5e1; border-radius: 8px; display: flex; justify-content: center; align-items: center; background: #f8fafc; }
-        .btn-op { background: var(--danger); color: white; padding: 4px 12px; border-radius: 8px; cursor: pointer; }
-        .fraction { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; }
-        .num { border-bottom: 2px solid var(--text-dark); padding: 0 5px; }
-
-        input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #ccc; box-sizing: border-box; }
+        /* Draggable UI */
+        .draggable { background: var(--accent); color: white; padding: 5px 12px; border-radius: 8px; cursor: grab; box-shadow: 0 3px 0 #b45309; }
+        .drop-zone { width: 60px; height: 60px; border: 2px dashed #cbd5e1; border-radius: 8px; display: flex; justify-content: center; align-items: center; background: #f8fafc; font-size: 1rem; color: #94a3b8; }
+        .btn-op { background: var(--danger); color: white; padding: 4px 12px; border-radius: 8px; cursor: pointer; border: none; font-size: 1.2rem; }
+        
+        input { width: 100%; padding: 12px; margin: 8px 0; border-radius: 10px; border: 1px solid #ccc; box-sizing: border-box; font-size: 1rem; }
         .feedback { font-weight: bold; padding: 10px; border-radius: 8px; margin-top: 5px; text-align: center; }
         .correct { background: #d1fae5; color: #065f46; }
         .wrong { background: #fee2e2; color: #991b1b; }
+
+        .fraction { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; }
+        .num { border-bottom: 2px solid var(--text-dark); padding: 0 5px; }
 
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
         .hidden { display: none; }
@@ -75,13 +71,13 @@
     </div>
 
     <div id="scr-welcome" class="screen active">
-        <h3 style="text-align:center">¡Bienvenido! Comencemos tu aventura matemática.</h3>
+        <h3 style="text-align:center">¡Bienvenido! Comencemos tu práctica.</h3>
         <input type="text" id="user-name" placeholder="Escribe tu nombre y apellido">
         <button class="btn-topic" onclick="goToMenu()">Entrar</button>
     </div>
 
     <div id="scr-main-menu" class="screen">
-        <h3 style="text-align:center">¿Qué quieres estudiar hoy?</h3>
+        <h3 style="text-align:center">Selecciona un tema:</h3>
         <div class="menu-grid">
             <button class="btn-main" onclick="openTopic('ecuaciones')"><span>Ecuaciones</span> <span>🧮</span></button>
             <button class="btn-main" onclick="openTopic('valor-absoluto')"><span>Valor Absoluto</span> <span>|x|</span></button>
@@ -92,14 +88,15 @@
         <button onclick="showScreen('scr-main-menu')" style="border:none; background:none; color:var(--action-blue); cursor:pointer">← Volver</button>
         <h2 id="topic-title" style="text-align:center"></h2>
         <div class="menu-grid">
-            <button class="btn-topic" onclick="startMode('aprende')">1. Aprendamos (Guía Interactiva)</button>
-            <button class="btn-topic" style="background:var(--action-blue)" onclick="startMode('practica')">2. Practiquemos (Sin Drag & Drop)</button>
+            <button class="btn-topic" onclick="startMode('aprende')">1. Aprendamos (Interactivo)</button>
+            <button class="btn-topic" style="background:var(--action-blue)" onclick="startMode('practica')">2. Practiquemos (Paso a Paso)</button>
             <button class="btn-topic" style="background:var(--success)" onclick="startMode('evalua')">3. Evalúate (Test Final)</button>
         </div>
     </div>
 
     <div id="scr-aprende" class="screen">
         <div class="story-box" id="aprende-story"></div>
+        <div id="tutorial-box" class="hidden" style="background:#e0f2fe; padding:15px; border-radius:10px; margin-bottom:15px"></div>
         <p id="aprende-instr" style="text-align:center; font-weight:bold; color:var(--mrveit)"></p>
         <div class="history-container" id="aprende-history"></div>
         <button id="btn-next-aprende" class="hidden" onclick="nextAprende()">Siguiente Ejercicio →</button>
@@ -111,7 +108,7 @@
         <div id="practica-input-zone">
             <p id="practica-prompt" style="font-weight:bold"></p>
             <input type="text" id="practica-input" placeholder="Escribe el siguiente paso...">
-            <button class="btn-topic" onclick="checkPracticaStep()">Verificar Paso</button>
+            <button class="btn-topic" onclick="checkPracticaStep()">Verificar</button>
             <div id="practica-feedback" class="feedback hidden"></div>
         </div>
         <button id="btn-next-practica" class="btn-topic hidden" onclick="nextPractica()">Siguiente Ejercicio →</button>
@@ -119,40 +116,46 @@
 
     <div id="scr-evalua" class="screen">
         <h3 style="text-align:center">Evaluación Final</h3>
-        <div class="story-box" style="background:#e0f2fe; border-left-color:var(--action-blue)">
-            <strong>Instrucciones:</strong> Resuelve los 5 ejercicios en tu cuaderno. Escribe solo el valor numérico de "x" en cada casilla.
-        </div>
         <div id="evalua-container"></div>
-        <button class="btn-topic" style="background:var(--success)" onclick="gradeEval()">Terminar y Ver Reporte</button>
+        <button class="btn-topic" style="background:var(--success)" onclick="gradeEval()">Terminar y Reportar</button>
     </div>
 
     <div id="scr-report" class="screen">
-        <h2 style="text-align:center">Reporte de Desempeño</h2>
+        <h2 style="text-align:center">Tu Resultado</h2>
         <div id="report-content"></div>
-        <button class="btn-topic" onclick="sendWA()">Enviar a Mr.Veit por WhatsApp</button>
+        <button class="btn-topic" onclick="sendWA()">Enviar a Mr.Veit</button>
         <button class="btn-topic btn-secondary" style="background:#64748b" onclick="showScreen('scr-main-menu')">Cerrar</button>
     </div>
 </div>
 
 <script>
-    let state = { name: "", topic: "", level: 0, currentEx: null, quizResults: [] };
+    let state = { name: "", topic: "", level: 0, currentEx: null, step: 0 };
 
-    // --- GENERACIÓN DE NIVELES (SEGÚN ARCHIVO COMPARTIDO) ---
-    function genEx(level) {
-        const x = Math.floor(Math.random() * 5) + 3;
-        const b = Math.floor(Math.random() * 7) + 2;
-        const a = Math.floor(Math.random() * 3) + 2;
-
-        switch(level) {
-            case 0: return { s:`Tenías x cartas, te dieron ${b}. Ahora tienes ${x+b}.`, q:"¿Cuántas tenías?", expr:`x + ${b} = ${x+b}`, steps:[`x = ${x+b} - ${b}`, `${x}`], res:x, type:'simple', op:'+', inv:'-', r:b, target:x+b };
-            case 1: return { s:`Había x aves, volaron ${b} y quedaron ${x}.`, q:"¿Cuántas había?", expr:`x - ${b} = ${x}`, steps:[`x = ${x} + ${b}`, `${x+b}`], res:x+b, type:'simple', op:'-', inv:'+', r:b, target:x };
-            case 2: return { s:`Hay ${a} grupos con x niños. Total: ${a*x}.`, q:"¿Niños por grupo?", expr:`${a}x = ${a*x}`, steps:[`x = ${a*x} / ${a}`, `${x}`], res:x, type:'div', l:a, target:a*x };
-            case 3: return { s:`El doble de un número (${a}x) más ${b} es ${a*x+b}.`, q:"¿Cuál es x?", expr:`${a}x + ${b} = ${a*x+b}`, steps:[`${a}x = ${a*x}`, `x = ${a*x} / ${a}`, `${x}`], res:x, type:'complejo', a_val:a, r:b, target:a*x+b };
-            case 4: return { s:`Repartes x dulces entre ${a} amigos y tocan a ${x} cada uno.`, q:"¿Total dulces?", expr:`x / ${a} = ${x}`, steps:[`x = ${x} * ${a}`, `${a*x}`], res:a*x, type:'simple', op:'/', inv:'*', r:a, target:x };
-        }
+    // --- GENERADOR DE NIVELES ECUACIONES ---
+    function getExEcuacion(lvl) {
+        const data = [
+            { s:"Tenías x dulces, compraste 8. Ahora tienes 15.", q:"¿Cuántos tenías?", expr:"x + 8 = 15", steps:["x = 15 - 8", "7"], res:7, type:'simple', op:'+', inv:'-', r:8, target:15 },
+            { s:"Tienes 4 cajas con x lápices cada una. En total hay 20.", q:"¿Cuántos hay por caja?", expr:"4x = 20", steps:["x = 20 / 4", "5"], res:5, type:'div', l:4, target:20 },
+            { s:"El cuádruple de x más 8 es igual a 28.", q:"¿Cuál es el valor de x?", expr:"4x + 8 = 28", steps:["4x = 28 - 8", "4x = 20", "x = 20 / 4", "5"], res:5, type:'complejo', a:4, r:8, target:28 },
+            { s:"Si divides x en 6 partes, obtienes 3.", q:"¿Cuál era el número original?", expr:"x / 6 = 3", steps:["x = 3 * 6", "18"], res:18, type:'mult', l:6, target:3 },
+            { s:"La sexta parte de x más 5 es igual a 8.", q:"¿Cuánto vale x?", expr:"x / 6 + 5 = 8", steps:["x / 6 = 8 - 5", "x / 6 = 3", "x = 3 * 6", "18"], res:18, type:'complejo_div', l:6, r:5, target:8 }
+        ];
+        return data[lvl];
     }
 
-    // --- NAVEGACIÓN ---
+    // --- GENERADOR DE NIVELES VALOR ABSOLUTO ---
+    function getExAbs(lvl) {
+        const data = [
+            { s:"El valor absoluto representa la distancia al cero. ¿Qué números están a 5 unidades del 0?", q:"Ingresa uno de los valores.", expr:"|x| = 5", steps:["5", "-5"], res:5, tutorial:"El valor absoluto siempre es positivo porque es una distancia. |x|=5 significa que x puede ser 5 o -5." },
+            { s:"Si la distancia de x al cero, más 2, es igual a 7.", q:"¿Cuál es el valor absoluto?", expr:"|x| + 2 = 7", steps:["|x| = 7 - 2", "5"], res:5 },
+            { s:"La distancia entre x y el número 3 es 4.", q:"Calcula el valor positivo de x.", expr:"|x - 3| = 4", steps:["x - 3 = 4", "7"], res:7 },
+            { s:"El doble del valor absoluto de x es 10.", q:"¿Cuál es el valor absoluto?", expr:"2|x| = 10", steps:["|x| = 10 / 2", "5"], res:5 },
+            { s:"Dos veces la distancia de x al 1 es igual a 6.", q:"Calcula x (valor positivo).", expr:"2|x - 1| = 6", steps:["|x - 1| = 3", "x - 1 = 3", "4"], res:4 }
+        ];
+        return data[lvl];
+    }
+
+    // --- LÓGICA DE NAVEGACIÓN ---
     function showScreen(id) {
         document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
@@ -172,51 +175,111 @@
 
     function startMode(m) {
         state.level = 0;
+        state.mode = m;
         if(m === 'aprende') loadAprende();
         else if(m === 'practica') loadPractica();
         else renderEval();
     }
 
-    // --- MODO 1: APRENDE (KINÉTICO CON RASTRO) ---
+    // --- MODO APRENDE (INTERACTIVO + RASTRO) ---
     function loadAprende() {
-        state.currentEx = genEx(state.level);
+        state.currentEx = state.topic === 'ecuaciones' ? getExEcuacion(state.level) : getExAbs(state.level);
+        state.subStep = 0;
         showScreen('scr-aprende');
         document.getElementById('aprende-history').innerHTML = "";
         document.getElementById('btn-next-aprende').classList.add('hidden');
-        document.getElementById('aprende-story').innerHTML = `<strong>Nivel ${state.level+1}:</strong> ${state.currentEx.s}<br>${state.currentEx.q}`;
-        renderAprendeRow();
+        document.getElementById('aprende-story').innerHTML = `<strong>Nivel ${state.level+1}:</strong> ${state.currentEx.s}`;
+        
+        const tut = document.getElementById('tutorial-box');
+        if(state.topic === 'valor-absoluto' && state.currentEx.tutorial) {
+            tut.innerHTML = `💡 <strong>Concepto:</strong> ${state.currentEx.tutorial}`;
+            tut.classList.remove('hidden');
+        } else { tut.classList.add('hidden'); }
+
+        renderAprendeUI();
     }
 
-    function renderAprendeRow() {
-        const row = document.createElement('div');
-        row.className = "step-row current"; row.id = "active-aprende";
+    function renderAprendeUI() {
         const ex = state.currentEx;
-        
-        if(ex.type === 'simple') {
-            document.getElementById('aprende-instr').innerText = "Arrastra el número para despejar x.";
-            row.innerHTML = `<div>x</div><div>${ex.op}</div><div class="draggable" draggable="true" ondragstart="drag(e)">${ex.r}</div><div>=</div><div>${ex.target}</div><div class="drop-zone" ondrop="dropAprende(event)" ondragover="allow(event)">?</div>`;
+        const history = document.getElementById('aprende-history');
+        const row = document.createElement('div');
+        row.className = "step-row current";
+        row.id = "active-step";
+
+        if(state.topic === 'ecuaciones') {
+            document.getElementById('aprende-instr').innerText = "Haz clic en el número o arrastra para mover.";
+            if(ex.type === 'simple') {
+                row.innerHTML = `<div>x</div><div>${ex.op}</div><div class="draggable" onclick="moveSimple()">${ex.r}</div><div>=</div><div>${ex.target}</div>`;
+            } else if(ex.type === 'div') {
+                row.innerHTML = `<div class="draggable" onclick="moveDiv()">${ex.l}</div><div>x</div><div>=</div><div>${ex.target}</div>`;
+            } else if(ex.type === 'mult') {
+                row.innerHTML = `<div class="fraction"><span class="num">x</span><span class="draggable" onclick="moveMult()">${ex.l}</span></div><div>=</div><div>${ex.target}</div>`;
+            } else if(ex.type === 'complejo' || ex.type === 'complejo_div') {
+                if(state.subStep === 0) {
+                    row.innerHTML = `<div>${ex.expr.split('+')[0]}</div><div>+</div><div class="draggable" onclick="moveComplex1()">${ex.r}</div><div>=</div><div>${ex.target}</div>`;
+                } else {
+                    const tempVal = ex.target - ex.r;
+                    if(ex.type === 'complejo') row.innerHTML = `<div class="draggable" onclick="moveComplex2(${tempVal})">${ex.a}</div><div>x</div><div>=</div><div>${tempVal}</div>`;
+                    else row.innerHTML = `<div class="fraction"><span class="num">x</span><span class="draggable" onclick="moveComplex2(${tempVal})">${ex.l}</span></div><div>=</div><div>${tempVal}</div>`;
+                }
+            }
         } else {
-            row.innerHTML = `<div>${ex.expr}</div><button class="btn-op" onclick="finishAprende()">Resolver</button>`;
+            // Valor Absoluto: Guía por mensajes/clics
+            document.getElementById('aprende-instr').innerText = "Toca el botón para resolver paso a paso.";
+            row.innerHTML = `<div>${ex.expr}</div> <button class="btn-op" onclick="finishAprende()">Resolver</button>`;
         }
+        history.appendChild(row);
+    }
+
+    // Funciones de movimiento
+    function fixStep() { const s = document.getElementById('active-step'); s.id = ""; s.className = "step-row old"; }
+    
+    function moveSimple() {
+        fixStep();
+        const ex = state.currentEx;
+        const row = document.createElement('div'); row.className = "step-row current"; row.id = "active-step";
+        row.innerHTML = `<div>x</div><div>=</div><div>${ex.target}</div><button class="btn-op" onclick="finishAprende()">${ex.inv}</button><div>${ex.r}</div>`;
         document.getElementById('aprende-history').appendChild(row);
     }
 
-    function dropAprende(e) {
-        e.preventDefault();
-        const old = document.getElementById('active-aprende');
-        old.id = ""; old.className = "step-row old";
-        const row = document.createElement('div');
-        row.className = "step-row current"; row.id = "active-aprende";
-        row.innerHTML = `<div>x</div><div>=</div><div>${state.currentEx.target}</div><div class="btn-op" onclick="finishAprende()">${state.currentEx.inv}</div><div>${state.currentEx.r}</div>`;
+    function moveDiv() {
+        fixStep();
+        const ex = state.currentEx;
+        const row = document.createElement('div'); row.className = "step-row current"; row.id = "active-step";
+        row.innerHTML = `<div>x</div><div>=</div><div class="fraction"><span class="num">${ex.target}</span><span>${ex.l}</span></div><button class="btn-op" onclick="finishAprende()">÷</button>`;
+        document.getElementById('aprende-history').appendChild(row);
+    }
+
+    function moveMult() {
+        fixStep();
+        const ex = state.currentEx;
+        const row = document.createElement('div'); row.className = "step-row current"; row.id = "active-step";
+        row.innerHTML = `<div>x</div><div>=</div><div>${ex.target}</div><button class="btn-op" onclick="finishAprende()">·</button><div>${ex.l}</div>`;
+        document.getElementById('aprende-history').appendChild(row);
+    }
+
+    function moveComplex1() {
+        fixStep();
+        state.subStep = 1;
+        const ex = state.currentEx;
+        const row = document.createElement('div'); row.className = "step-row current"; row.id = "active-step";
+        row.innerHTML = `<div>${ex.expr.split('+')[0]}</div><div>=</div><div>${ex.target}</div><button class="btn-op" onclick="renderAprendeUI()">-</button><div>${ex.r}</div>`;
+        document.getElementById('aprende-history').appendChild(row);
+    }
+
+    function moveComplex2(val) {
+        fixStep();
+        const ex = state.currentEx;
+        const row = document.createElement('div'); row.className = "step-row current"; row.id = "active-step";
+        if(ex.type === 'complejo') row.innerHTML = `<div>x</div><div>=</div><div class="fraction"><span class="num">${val}</span><span>${ex.a}</span></div><button class="btn-op" onclick="finishAprende()">÷</button>`;
+        else row.innerHTML = `<div>x</div><div>=</div><div>${val}</div><button class="btn-op" onclick="finishAprende()">·</button><div>${ex.l}</div>`;
         document.getElementById('aprende-history').appendChild(row);
     }
 
     function finishAprende() {
-        const old = document.getElementById('active-aprende');
-        old.id = ""; old.className = "step-row old";
-        const row = document.createElement('div');
-        row.className = "step-row current";
-        row.innerHTML = `<div>x</div><div>=</div><div style="color:var(--success)">${state.currentEx.res}</div>`;
+        fixStep();
+        const row = document.createElement('div'); row.className = "step-row current";
+        row.innerHTML = `<div>Resultado: x =</div><div style="color:var(--success); font-weight:bold">${state.currentEx.res}</div>`;
         document.getElementById('aprende-history').appendChild(row);
         document.getElementById('btn-next-aprende').classList.remove('hidden');
     }
@@ -226,49 +289,38 @@
         if(state.level < 5) loadAprende(); else showScreen('scr-topic-menu');
     }
 
-    // --- MODO 2: PRACTICA (PASO A PASO ASISTIDO) ---
-    let practicaStep = 0;
+    // --- MODO PRACTICA (PASO A PASO) ---
     function loadPractica() {
-        state.currentEx = genEx(state.level);
-        practicaStep = 0;
+        state.currentEx = state.topic === 'ecuaciones' ? getExEcuacion(state.level) : getExAbs(state.level);
+        state.step = 0;
         showScreen('scr-practica');
         document.getElementById('practica-history').innerHTML = `<div class="step-row current">${state.currentEx.expr}</div>`;
         document.getElementById('practica-story').innerText = state.currentEx.s;
-        document.getElementById('practica-prompt').innerText = "Escribe el siguiente paso de la ecuación:";
+        document.getElementById('practica-prompt').innerText = "Escribe el siguiente paso:";
         document.getElementById('btn-next-practica').classList.add('hidden');
         document.getElementById('practica-input-zone').classList.remove('hidden');
     }
 
     function checkPracticaStep() {
-        const input = document.getElementById('practica-input');
-        const feedback = document.getElementById('practica-feedback');
-        const correctStep = state.currentEx.steps[practicaStep].replace(/\s/g, '');
-        const userStep = input.value.replace(/\s/g, '');
+        const val = document.getElementById('practica-input').value.replace(/\s/g, '').toLowerCase();
+        const correct = state.currentEx.steps[state.step].replace(/\s/g, '').toLowerCase();
+        const feed = document.getElementById('practica-feedback');
 
-        if(userStep === correctStep) {
-            feedback.innerText = "¡Correcto! Muy bien.";
-            feedback.className = "feedback correct";
-            feedback.classList.remove('hidden');
-            
-            // Mover al historial
+        if(val === correct || (state.step === state.currentEx.steps.length-1 && parseInt(val) === state.currentEx.res)) {
+            feed.innerText = "¡Correcto!"; feed.className = "feedback correct"; feed.classList.remove('hidden');
             const hist = document.getElementById('practica-history');
             hist.lastChild.className = "step-row old";
-            const row = document.createElement('div');
-            row.className = "step-row current";
-            row.innerText = state.currentEx.steps[practicaStep];
+            const row = document.createElement('div'); row.className = "step-row current";
+            row.innerText = state.currentEx.steps[state.step];
             hist.appendChild(row);
-
-            practicaStep++;
-            input.value = "";
-            
-            if(practicaStep >= state.currentEx.steps.length) {
+            state.step++;
+            document.getElementById('practica-input').value = "";
+            if(state.step >= state.currentEx.steps.length) {
                 document.getElementById('practica-input-zone').classList.add('hidden');
                 document.getElementById('btn-next-practica').classList.remove('hidden');
             }
         } else {
-            feedback.innerText = "Casi... Revisa bien la operación.";
-            feedback.className = "feedback wrong";
-            feedback.classList.remove('hidden');
+            feed.innerText = "Inténtalo de nuevo."; feed.className = "feedback wrong"; feed.classList.remove('hidden');
         }
     }
 
@@ -277,50 +329,30 @@
         if(state.level < 5) loadPractica(); else showScreen('scr-topic-menu');
     }
 
-    // --- MODO 3: EVALÚA ---
+    // --- EVALUACIÓN ---
     function renderEval() {
         showScreen('scr-evalua');
-        const container = document.getElementById('evalua-container');
-        container.innerHTML = "";
-        state.quizPool = [];
+        const cont = document.getElementById('evalua-container');
+        cont.innerHTML = ""; state.quiz = [];
         for(let i=0; i<5; i++) {
-            const ex = genEx(i);
-            state.quizPool.push(ex);
-            container.innerHTML += `
-                <div class="story-box" style="background:white">
-                    <p><strong>Nivel ${i+1}:</strong> ${ex.s}</p>
-                    <p>Ecuación: ${ex.expr}</p>
-                    <input type="number" id="eval-${i}" placeholder="x = ?">
-                </div>`;
+            const ex = state.topic === 'ecuaciones' ? getExEcuacion(i) : getExAbs(i);
+            state.quiz.push(ex);
+            cont.innerHTML += `<div class="story-box" style="background:white"><strong>Nivel ${i+1}:</strong> ${ex.s}<br>Ecuación: ${ex.expr}<br><input type="number" id="ev-${i}" placeholder="Valor de x"></div>`;
         }
     }
 
     function gradeEval() {
         let nota = 0;
-        let reporteHTML = "";
-        state.quizPool.forEach((ex, i) => {
-            const val = document.getElementById(`eval-${i}`).value;
-            const isCorrect = parseInt(val) === ex.res;
-            if(isCorrect) nota++;
-            reporteHTML += `
-                <div style="border-bottom:1px solid #eee; padding:10px">
-                    <strong>Nivel ${i+1}:</strong> ${isCorrect ? '✅' : '❌'}<br>
-                    Respuesta correcta: x = ${ex.res}
-                </div>`;
-        });
+        state.quiz.forEach((ex, i) => { if(parseInt(document.getElementById(`ev-${i}`).value) === ex.res) nota++; });
         state.finalNota = nota;
-        document.getElementById('report-content').innerHTML = `<h3>Nota: ${nota}/5</h3>` + reporteHTML;
+        document.getElementById('report-content').innerHTML = `<h1 style="font-size:4rem">${nota}/5</h1><p>¡Buen trabajo, ${state.name}!</p>`;
         showScreen('scr-report');
     }
 
     function sendWA() {
-        const msg = `*REPORTE EQUILIBRIA*\nEstudiante: ${state.name}\nNota Final: ${state.finalNota}/5`;
+        const msg = `*REPORTE EQUILIBRIA*\nEstudiante: ${state.name}\nTema: ${state.topic}\nNota: ${state.finalNota}/5`;
         window.open(`https://wa.me/56961410052?text=${encodeURIComponent(msg)}`);
     }
-
-    function drag(e) { e.dataTransfer.setData("text", "drag"); }
-    function allow(e) { e.preventDefault(); }
 </script>
-
 </body>
 </html>
