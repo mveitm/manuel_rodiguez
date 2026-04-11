@@ -13,10 +13,12 @@
             --bg-light: #f8fafc;
             --text-dark: #0f172a;
             --white: #ffffff;
+            --error-red: #ef4444;
+            --success-green: #22c55e;
         }
 
         body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-light); margin: 0; display: flex; justify-content: center; min-height: 100vh; color: var(--text-dark); }
-        #app { background: var(--white); width: 95%; max-width: 650px; margin: 20px; border-radius: 24px; box-shadow: 0 20px 40px rgba(30, 64, 175, 0.1); padding: 25px; border-top: 8px solid var(--primary-blue); position: relative; }
+        #app { background: var(--white); width: 95%; max-width: 650px; margin: 20px; border-radius: 24px; box-shadow: 0 20px 40px rgba(30,64,175,0.1); padding: 25px; border-top: 8px solid var(--primary-blue); position: relative; }
         
         .logo-container { text-align: center; margin-bottom: 25px; }
         .logo { font-size: 1.8rem; font-weight: 800; color: var(--primary-blue); margin: 0; line-height: 1.2; }
@@ -24,23 +26,27 @@
         .screen { display: none; animation: fadeIn 0.3s ease; }
         .active { display: block; }
 
-        /* ESTILO DE FRACCIÓN VERTICAL */
-        .frac { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; line-height: 1.1; margin: 0 5px; min-width: 30px; }
+        /* FRACCIÓN VERTICAL */
+        .frac { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; line-height: 1.1; margin: 0 5px; }
         .num { border-bottom: 2px solid currentColor; padding: 0 5px; width: 100%; text-align: center; }
         .den { padding: 0 5px; width: 100%; text-align: center; }
 
-        .btn-main { background: var(--primary-blue); color: white; border: none; padding: 16px; border-radius: 14px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1.1rem; margin-bottom: 12px; transition: 0.2s; border-bottom: 4px solid #1e3a8a; }
-        .btn-alt { background: var(--white); color: var(--text-dark); border: 2px solid #e2e8f0; padding: 15px; border-radius: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; }
-        .btn-alt:hover { border-color: var(--action-cyan); background: #ecfeff; }
+        .btn-main { background: var(--primary-blue); color: white; border: none; padding: 16px; border-radius: 14px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1.1rem; margin-bottom: 12px; border-bottom: 4px solid #1e3a8a; }
+        
+        /* ALTERNATIVAS */
+        .btn-alt { background: var(--white); color: var(--text-dark); border: 2px solid #e2e8f0; padding: 15px; border-radius: 12px; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; transition: 0.2s; font-size: 1.1rem; }
+        .btn-alt.correct { border-color: var(--success-green); background: #f0fdf4; color: #166534; pointer-events: none; }
+        .btn-alt.wrong { border-color: var(--error-red); background: #fef2f2; color: #991b1b; opacity: 0.7; }
 
         .history-container { display: flex; flex-direction: column; gap: 10px; margin: 20px 0; padding: 15px; background: #f1f5f9; border-radius: 18px; border: 1px solid #e2e8f0; }
-        .step-row { display: flex; justify-content: center; align-items: center; gap: 10px; font-size: 1.5rem; padding: 10px; font-weight: 600; min-height: 50px; }
+        .step-row { display: flex; justify-content: center; align-items: center; gap: 10px; font-size: 1.5rem; padding: 10px; font-weight: 600; min-height: 60px; text-align: center; }
         .step-row.current { background: var(--attention-yellow); border-radius: 12px; color: var(--primary-blue); }
         .step-row.old { opacity: 0.4; font-size: 1.1rem; }
 
-        .highlight-box { background: var(--highlight-orange); color: white; padding: 5px 10px; border-radius: 8px; cursor: pointer; }
-        input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 2px solid #cbd5e1; font-size: 1rem; box-sizing: border-box; }
-        
+        .feedback-msg { padding: 12px; border-radius: 10px; text-align: center; font-weight: bold; margin-top: 10px; }
+        .feedback-msg.error { color: var(--error-red); background: #fef2f2; }
+        .feedback-msg.success { color: var(--success-green); background: #f0fdf4; }
+
         .report-card { background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 16px; margin-bottom: 12px; }
         .sol-detail { background: #ffffff; padding: 15px; border-radius: 10px; margin-top: 10px; display: none; border: 1px solid var(--action-cyan); }
 
@@ -56,13 +62,12 @@
     </div>
 
     <div id="scr-welcome" class="screen active">
-        <input type="text" id="user-name" placeholder="Escribe tu nombre...">
+        <input type="text" id="user-name" placeholder="Tu nombre..." style="width:100%; padding:14px; margin-bottom:15px; border-radius:12px; border:2px solid #ddd">
         <button class="btn-main" onclick="goToMenu()">Empezar Clase</button>
     </div>
 
     <div id="scr-menu" class="screen">
         <h3 style="text-align:center">Ecuaciones de 1er Grado</h3>
-        <button class="btn-main" onclick="startMode('aprende')">Ver Explicación Visual</button>
         <button class="btn-main" style="background:var(--action-cyan)" onclick="startMode('practica')">Practicar con Alternativas</button>
         <button class="btn-main" style="background:var(--highlight-orange)" onclick="startMode('evalua')">Realizar Evaluación</button>
     </div>
@@ -70,11 +75,15 @@
     <div id="scr-work" class="screen">
         <div id="work-story" style="background:#eff6ff; padding:15px; border-radius:12px; margin-bottom:15px"></div>
         <div id="work-history" class="history-container"></div>
+        
         <div id="interactive-zone">
+            <p style="text-align:center; font-weight:bold">¿Cuál es el siguiente paso?</p>
             <div id="alt-container" style="display:grid; gap:10px"></div>
-            <p id="work-instr" style="text-align:center; font-weight:bold; color:var(--primary-blue)"></p>
+            <div id="work-feedback" class="feedback-msg hidden"></div>
         </div>
-        <button id="btn-next" class="btn-main hidden" onclick="nextLevel()">Siguiente Ejercicio →</button>
+
+        <button id="btn-next-step" class="btn-main hidden" style="margin-top:15px; background:var(--success-green); border-color:#15803d" onclick="confirmNextStep()">Continuar →</button>
+        <button id="btn-finish-ex" class="btn-main hidden" style="margin-top:15px" onclick="nextLevel()">Siguiente Ejercicio →</button>
     </div>
 
     <div id="scr-eval" class="screen">
@@ -95,13 +104,13 @@
 
     function getEx(lvl) {
         const r = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-        let x = r(2, 10);
+        let x = r(2, 8);
         switch(lvl) {
-            case 0: let a0 = r(5, 15); return { s:`Si a x le sumas ${a0}, obtienes ${x+a0}.`, html:`x + ${a0} = ${x+a0}`, res:x, steps:[`x = ${x+a0} - ${a0}`, `x = ${x}`] };
-            case 1: let a1 = r(2, 6); return { s:`Calcula x en esta multiplicación:`, html:`${a1}x = ${a1*x}`, res:x, steps:[`x = <span class="frac"><span class="num">${a1*x}</span><span class="den">${a1}</span></span>`, `x = ${x}`] };
-            case 2: let a2 = r(2, 8); return { s:`Calcula x en esta división:`, html:`<span class="frac"><span class="num">x</span><span class="den">${a2}</span></span> = ${x}`, res:x*a2, steps:[`x = ${x} · ${a2}`, `x = ${x*a2}`] };
-            case 3: let a3 = r(2, 5), b3 = r(1, 10); return { s:`Ecuación de dos pasos:`, html:`${a3}x + ${b3} = ${a3*x+b3}`, res:x, steps:[`${a3}x = ${a3*x+b3} - ${b3}`, `${a3}x = ${a3*x}`, `x = <span class="frac"><span class="num">${a3*x}</span><span class="den">${a3}</span></span>`, `x = ${x}`] };
-            case 4: let a4 = r(2, 4), b4 = r(1, 10); return { s:`División y suma combinadas:`, html:`<span class="frac"><span class="num">x</span><span class="den">${a4}</span></span> + ${b4} = ${x+b4}`, res:x*a4, steps:[`<span class="frac"><span class="num">x</span><span class="den">${a4}</span></span> = ${x+b4} - ${b4}`, `<span class="frac"><span class="num">x</span><span class="den">${a4}</span></span> = ${x}`, `x = ${x} · ${a4}`, `x = ${x*a4}`] };
+            case 0: let a0 = r(5, 12); return { s:`Suma simple:`, html:`x + ${a0} = ${x+a0}`, res:x, steps:[`x = ${x+a0} - ${a0}`, `x = ${x}`] };
+            case 1: let a1 = r(2, 6); return { s:`Multiplicación:`, html:`${a1}x = ${a1*x}`, res:x, steps:[`x = <span class="frac"><span class="num">${a1*x}</span><span class="den">${a1}</span></span>`, `x = ${x}`] };
+            case 2: let a2 = r(2, 6); return { s:`División:`, html:`<span class="frac"><span class="num">x</span><span class="den">${a2}</span></span> = ${x}`, res:x*a2, steps:[`x = ${x} · ${a2}`, `x = ${x*a2}`] };
+            case 3: let a3 = r(2, 4), b3 = r(2, 8); return { s:`Pasos combinados:`, html:`${a3}x + ${b3} = ${a3*x+b3}`, res:x, steps:[`${a3}x = ${a3*x+b3} - ${b3}`, `${a3}x = ${a3*x}`, `x = <span class="frac"><span class="num">${a3*x}</span><span class="den">${a3}</span></span>`, `x = ${x}`] };
+            case 4: let a4 = r(2, 4), b4 = r(2, 6); return { s:`Desafío final:`, html:`<span class="frac"><span class="num">x</span><span class="den">${a4}</span></span> + ${b4} = ${x+b4}`, res:x*a4, steps:[`<span class="frac"><span class="num">x</span><span class="den">${a4}</span></span> = ${x+b4} - ${b4}`, `<span class="frac"><span class="num">x</span><span class="den">${a4}</span></span> = ${x}`, `x = ${x} · ${a4}`, `x = ${x*a4}`] };
         }
     }
 
@@ -120,59 +129,76 @@
         showScreen('scr-work');
         document.getElementById('work-story').innerHTML = `<b>Nivel ${state.level+1}:</b> ${state.currentEx.s}`;
         document.getElementById('work-history').innerHTML = `<div class="step-row current">${state.currentEx.html}</div>`;
-        document.getElementById('btn-next').classList.add('hidden');
+        document.getElementById('btn-finish-ex').classList.add('hidden');
+        document.getElementById('btn-next-step').classList.add('hidden');
         document.getElementById('interactive-zone').classList.remove('hidden');
-        
-        if(state.mode === 'aprende') {
-            document.getElementById('work-instr').innerText = "Analiza el procedimiento...";
-            setTimeout(showNextStepAprende, 1000);
-        } else renderAlts();
-    }
-
-    function showNextStepAprende() {
-        if(state.step < state.currentEx.steps.length) {
-            addStepRow(state.currentEx.steps[state.step]);
-            state.step++;
-            setTimeout(showNextStepAprende, 1500);
-        } else {
-            document.getElementById('btn-next').classList.remove('hidden');
-        }
+        renderAlts();
     }
 
     function renderAlts() {
-        document.getElementById('work-instr').innerText = "Selecciona el paso correcto:";
         const correct = state.currentEx.steps[state.step];
-        const alts = [correct, `x = ${state.currentEx.res + 2}`, `x = ${Math.floor(Math.random()*20)}`].sort(() => Math.random() - 0.5);
+        const alts = [correct, genDistractor(correct), genDistractor(correct)].sort(() => Math.random() - 0.5);
         const cont = document.getElementById('alt-container');
         cont.innerHTML = "";
+        
+        document.getElementById('work-feedback').classList.add('hidden');
+
         alts.forEach(a => {
             const b = document.createElement('button');
             b.className = "btn-alt"; b.innerHTML = a;
-            b.onclick = () => {
-                if(a === correct) {
-                    addStepRow(correct);
-                    state.step++;
-                    if(state.step < state.currentEx.steps.length) renderAlts();
-                    else {
-                        document.getElementById('interactive-zone').classList.add('hidden');
-                        document.getElementById('btn-next').classList.remove('hidden');
-                    }
-                }
-            };
+            b.onclick = (e) => checkAnswer(a, correct, e.target);
             cont.appendChild(b);
         });
     }
 
-    function addStepRow(html) {
+    function checkAnswer(selected, correct, element) {
+        const feed = document.getElementById('work-feedback');
+        feed.classList.remove('hidden');
+
+        if(selected === correct) {
+            element.className = "btn-alt correct";
+            feed.innerText = "¡Correcto! Muy bien pensado.";
+            feed.className = "feedback-msg success";
+            document.getElementById('btn-next-step').classList.remove('hidden');
+            // Bloquear otras opciones
+            document.querySelectorAll('.btn-alt').forEach(b => b.style.pointerEvents = 'none');
+        } else {
+            element.className = "btn-alt wrong";
+            feed.innerText = "Ese no es el paso correcto. Revisa la operación inversa.";
+            feed.className = "feedback-msg error";
+        }
+    }
+
+    function confirmNextStep() {
+        const correct = state.currentEx.steps[state.step];
         const hist = document.getElementById('work-history');
         hist.lastChild.className = "step-row old";
+        
         const r = document.createElement('div');
-        r.className = "step-row current"; r.innerHTML = html;
+        r.className = "step-row current"; r.innerHTML = correct;
         hist.appendChild(r);
+
+        state.step++;
+        document.getElementById('btn-next-step').classList.add('hidden');
+
+        if(state.step < state.currentEx.steps.length) {
+            renderAlts();
+        } else {
+            document.getElementById('interactive-zone').classList.add('hidden');
+            document.getElementById('btn-finish-ex').classList.remove('hidden');
+        }
+    }
+
+    function genDistractor(c) {
+        if(c.includes('-')) return c.replace('-', '+');
+        if(c.includes('·')) return c.replace('·', '/');
+        if(c.includes('num')) return c.replace('num', 'num-wrong').replace('den', 'den-wrong');
+        return `x = ${Math.floor(Math.random()*40)}`;
     }
 
     function nextLevel() { state.level++; if(state.level < 5) loadExercise(); else showScreen('scr-menu'); }
 
+    // --- EVALUACIÓN (MISMA LÓGICA DE FRACCIONES VERTICALES) ---
     function renderEval() {
         showScreen('scr-eval');
         const list = document.getElementById('eval-list');
@@ -195,7 +221,7 @@
                 <div class="report-card" style="border-left: 5px solid ${ok?'#22c55e':'#ef4444'}">
                     <b>Reto ${i+1}:</b> ${ex.html} ${ok?'✅':'❌'}<br>
                     Tu respuesta: ${val || '?'} | Correcta: ${ex.res}
-                    <button class="btn-alt" style="width:100%; margin-top:10px; padding:5px" onclick="document.getElementById('s-${i}').style.display='block'">Ver Solución</button>
+                    <button class="btn-alt" style="width:100%; margin-top:10px; padding:5px; font-size:0.9rem" onclick="document.getElementById('s-${i}').style.display='block'">Ver Solución</button>
                     <div id="s-${i}" class="sol-detail">
                         ${ex.steps.map(s => `<div class="step-row" style="font-size:1rem">${s}</div>`).join('')}
                     </div>
