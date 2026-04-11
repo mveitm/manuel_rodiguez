@@ -15,7 +15,7 @@
             --white: #ffffff;
         }
 
-        body { font-family: 'Segoe UI', sans-serif; background-color: var(--bg-light); margin: 0; display: flex; justify-content: center; min-height: 100vh; color: var(--text-dark); }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--bg-light); margin: 0; display: flex; justify-content: center; min-height: 100vh; color: var(--text-dark); }
         #app { background: var(--white); width: 95%; max-width: 650px; margin: 20px; border-radius: 24px; box-shadow: 0 20px 40px rgba(30, 64, 175, 0.1); padding: 25px; border-top: 8px solid var(--primary-blue); position: relative; }
         
         .btn-back { position: absolute; top: 15px; left: 15px; background: none; border: none; color: var(--primary-blue); cursor: pointer; font-weight: bold; }
@@ -28,17 +28,21 @@
         .btn-main { background: var(--primary-blue); color: white; border: none; padding: 16px; border-radius: 14px; font-weight: bold; cursor: pointer; width: 100%; font-size: 1.1rem; margin-bottom: 12px; transition: 0.2s; border-bottom: 4px solid #1e3a8a; }
         .btn-main:hover { background: #1d4ed8; transform: translateY(-2px); }
         
-        .btn-alt { background: var(--white); color: var(--text-dark); border: 2px solid #e2e8f0; padding: 15px; border-radius: 12px; font-weight: 600; cursor: pointer; text-align: left; }
+        .btn-alt { background: var(--white); color: var(--text-dark); border: 2px solid #e2e8f0; padding: 15px; border-radius: 12px; font-weight: 600; cursor: pointer; text-align: left; transition: 0.2s; }
         .btn-alt:hover { border-color: var(--action-cyan); background: #ecfeff; }
 
-        .story-box { background: #eff6ff; border-left: 5px solid var(--action-cyan); padding: 15px; border-radius: 12px; margin-bottom: 20px; }
+        .story-box { background: #eff6ff; border-left: 5px solid var(--action-cyan); padding: 15px; border-radius: 12px; margin-bottom: 20px; font-size: 1.05rem; }
         .history-container { display: flex; flex-direction: column; gap: 10px; margin: 20px 0; padding: 15px; background: #f1f5f9; border-radius: 18px; border: 1px solid #e2e8f0; }
         
         .step-row { display: flex; justify-content: center; align-items: center; gap: 12px; font-size: 1.6rem; padding: 10px; font-weight: 600; }
         .step-row.current { background: var(--attention-yellow); border-radius: 12px; color: var(--primary-blue); }
         .step-row.old { opacity: 0.4; font-size: 1.2rem; }
 
-        .highlight-box { background: var(--highlight-orange); color: white; padding: 4px 12px; border-radius: 8px; }
+        .fraction { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; line-height: 1; margin: 0 5px; }
+        .num { border-bottom: 3px solid var(--primary-blue); padding: 0 10px; width: 100%; text-align: center; }
+        .den { padding: 0 10px; width: 100%; text-align: center; }
+
+        .highlight-box { background: var(--highlight-orange); color: white; padding: 4px 12px; border-radius: 8px; cursor: pointer; }
         
         input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 2px solid #cbd5e1; font-size: 1rem; }
         .feedback { font-weight: bold; padding: 15px; border-radius: 12px; margin-top: 15px; text-align: center; }
@@ -46,7 +50,7 @@
         .wrong { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
 
         .report-card { background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 16px; margin-bottom: 12px; }
-        .sol-detail { background: #ffffff; padding: 12px; border-radius: 10px; margin-top: 10px; display: none; font-family: monospace; border: 1px solid var(--action-cyan); white-space: pre-wrap; }
+        .sol-detail { background: #ffffff; padding: 12px; border-radius: 10px; margin-top: 10px; display: none; font-family: 'Courier New', monospace; border: 1px solid var(--action-cyan); }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .hidden { display: none; }
@@ -61,66 +65,65 @@
     </div>
 
     <div id="scr-welcome" class="screen active">
-        <input type="text" id="user-name" placeholder="Tu nombre...">
-        <button class="btn-main" onclick="goToMenu()">Ingresar a la Clase</button>
-    </div>
-
-    <div id="scr-main-menu" class="screen">
-        <h3 style="text-align:center">¿Qué tema veremos hoy?</h3>
-        <button class="btn-main" onclick="openTopic('ecuaciones')">1. Ecuaciones</button>
-        <button class="btn-main" style="background:var(--action-cyan)" onclick="openTopic('valor-absoluto')">2. Valor Absoluto</button>
+        <div style="text-align:center; margin-bottom: 20px;">
+            <p>¡Hola! Soy el Profesor Mauricio y hoy dominaremos las ecuaciones juntos.</p>
+        </div>
+        <input type="text" id="user-name" placeholder="Escribe tu nombre aquí...">
+        <button class="btn-main" onclick="goToMenu()">Comenzar Clase</button>
     </div>
 
     <div id="scr-topic-menu" class="screen">
-        <h2 id="topic-title" style="text-align:center; color:var(--primary-blue)"></h2>
-        <button class="btn-main" onclick="startMode('aprende')">Ver Explicación</button>
-        <button class="btn-main" style="background:var(--action-cyan)" onclick="startMode('practica')">Practiquemos (Alternativas)</button>
-        <button class="btn-main" style="background:var(--highlight-orange)" onclick="startMode('evalua')">Evaluación Final</button>
+        <h2 style="text-align:center; color:var(--primary-blue)">Ecuaciones de 1er Grado</h2>
+        <button class="btn-main" onclick="startMode('aprende')">Ver Explicación Visual</button>
+        <button class="btn-main" style="background:var(--action-cyan); border-color:#0891b2" onclick="startMode('practica')">Practicar con Alternativas</button>
+        <button class="btn-main" style="background:var(--highlight-orange); border-color:#c2410c" onclick="startMode('evalua')">Realizar Evaluación</button>
+    </div>
+
+    <div id="scr-aprende" class="screen">
+        <div class="story-box" id="aprende-story"></div>
+        <div class="history-container" id="aprende-history"></div>
+        <p id="aprende-instr" style="text-align:center; font-weight:bold; color:var(--primary-blue)"></p>
+        <button id="btn-next-aprende" class="hidden btn-main" onclick="nextAprende()">Siguiente Nivel →</button>
     </div>
 
     <div id="scr-practica" class="screen">
         <div class="story-box" id="practica-story"></div>
         <div id="practica-history" class="history-container"></div>
         <div id="practica-zone">
-            <p style="text-align:center; font-weight:bold">Selecciona el paso correcto:</p>
+            <p style="text-align:center; font-weight:bold">Elige el paso correcto:</p>
             <div id="practica-options" style="display:grid; gap:10px"></div>
             <div id="practica-feedback" class="feedback hidden"></div>
         </div>
-        <button id="btn-next-practica" class="btn-main hidden" onclick="nextPractica()">Siguiente Ejercicio →</button>
+        <button id="btn-next-practica" class="btn-main hidden" onclick="nextPractica()">Continuar →</button>
     </div>
 
     <div id="scr-evalua" class="screen">
-        <h3 style="text-align:center">Test de Conocimientos</h3>
+        <h3 style="text-align:center">Evaluación de Ecuaciones</h3>
         <div id="evalua-container"></div>
-        <button class="btn-main" style="background:var(--highlight-orange)" onclick="gradeEval()">Terminar Evaluación</button>
+        <button class="btn-main" style="background:var(--highlight-orange); border-color:#c2410c" onclick="gradeEval()">Finalizar y Ver Nota</button>
     </div>
 
     <div id="scr-report" class="screen">
-        <h2 style="text-align:center">Resultados</h2>
-        <div id="report-score" style="text-align:center; font-size: 3rem; font-weight:900; color:var(--primary-blue)"></div>
-        <div id="report-details"></div>
-        <button class="btn-main" onclick="sendWA()">Enviar al Prof. Mauricio</button>
+        <h2 style="text-align:center">Tu Reporte Final</h2>
+        <div id="report-score" style="text-align:center; font-size: 3.5rem; font-weight:900; color:var(--primary-blue)"></div>
+        <div id="report-details" style="margin-top:20px"></div>
+        <button class="btn-main" onclick="sendWA()">Enviar al Profesor Mauricio</button>
+        <button class="btn-main" style="background:#64748b; border:none" onclick="showScreen('scr-topic-menu')">Volver al Inicio</button>
     </div>
 </div>
 
 <script>
-    let state = { name:"", topic:"", level:0, currentEx:null, step:0, quiz:[] };
+    let state = { name:"", mode:"", level:0, currentEx:null, step:0, quiz:[] };
 
-    function getEx(topic, lvl) {
+    function getEx(lvl) {
         const r = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
-        if(topic === 'ecuaciones') {
-            let x = r(2, 10);
-            return { s:`Calcula x en:`, expr:`x + ${lvl+2} = ${x+lvl+2}`, steps:[`x = ${x+lvl+2} - ${lvl+2}`, `x = ${x}`], res:x };
-        } else {
-            let x = r(5, 15);
-            let b = r(1, 10);
-            return { 
-                s:`Ecuación con valor absoluto:`, 
-                expr:`|x| + ${b} = ${x+b}`, 
-                steps:[`|x| = ${x+b} - ${b}`, `|x| = ${x}`, `x = ${x} o x = -${x}`], 
-                res: x, // Valor positivo de referencia
-                isVA: true 
-            };
+        let x = r(2, 12);
+        switch(lvl) {
+            case 0: let a0 = r(5, 20); return { s:`Si a un número x le sumas ${a0}, obtienes ${x+a0}.`, expr:`x + ${a0} = ${x+a0}`, steps:[`x = ${x+a0} - ${a0}`, `x = ${x}`], res:x, type:'simple', op:'+', inv:'-', r:a0, target:x+a0 };
+            case 1: let a1 = r(2, 8); return { s:`El producto de ${a1} por x es ${a1*x}.`, expr:`${a1}x = ${a1*x}`, steps:[`x = ${a1*x} / ${a1}`, `x = ${x}`], res:x, type:'div', l:a1, target:a1*x };
+            case 2: let a2 = r(2, 5), b2 = r(2, 15); return { s:`${a2} veces x más ${b2} es igual a ${a2*x+b2}.`, expr:`${a2}x + ${b2} = ${a2*x+b2}`, steps:[`${a2}x = ${a2*x+b2} - ${b2}`, `${a2}x = ${a2*x}`, `x = ${a2*x} / ${a2}`, `x = ${x}`], res:x, type:'c_mult', a:a2, r:b2, target:a2*x+b2 };
+            case 3: let a3 = r(2, 10); return { s:`La división de x por ${a3} da como resultado ${x}.`, expr:`x / ${a3} = ${x}`, steps:[`x = ${x} * ${a3}`, `x = ${x*a3}`], res:x*a3, type:'mult', l:a3, target:x };
+            case 4: let a4 = r(2, 5), b4 = r(1, 10); return { s:`x dividido en ${a4} sumado con ${b4} es ${x+b4}.`, expr:`x / ${a4} + ${b4} = ${x+b4}`, steps:[`x / ${a4} = ${x+b4} - ${b4}`, `x / ${a4} = ${x}`, `x = ${x} * ${a4}`, `x = ${x*a4}`], res:x*a4, type:'c_div', l:a4, r:b4, target:x+b4 };
         }
     }
 
@@ -130,17 +133,57 @@
         document.getElementById('global-back').classList.toggle('hidden', id === 'scr-welcome' || id === 'scr-report');
     }
 
-    function goToMenu() { state.name = document.getElementById('user-name').value || "Estudiante"; showScreen('scr-main-menu'); }
-    function openTopic(t) { state.topic = t; document.getElementById('topic-title').innerText = t === 'ecuaciones' ? "Ecuaciones" : "Valor Absoluto"; showScreen('scr-topic-menu'); }
+    function goBack() { showScreen('scr-topic-menu'); }
+    function goToMenu() { state.name = document.getElementById('user-name').value || "Estudiante"; showScreen('scr-topic-menu'); }
 
     function startMode(m) {
-        state.level = 0;
-        if(m === 'practica') loadPractica();
-        else if(m === 'evalua') renderEval();
+        state.level = 0; state.mode = m;
+        if(m === 'aprende') loadAprende();
+        else if(m === 'practica') loadPractica();
+        else renderEval();
     }
 
+    function loadAprende() {
+        state.currentEx = getEx(state.level);
+        state.subStep = 0;
+        showScreen('scr-aprende');
+        document.getElementById('aprende-history').innerHTML = "";
+        document.getElementById('btn-next-aprende').classList.add('hidden');
+        document.getElementById('aprende-story').innerHTML = `<strong>Nivel ${state.level+1}:</strong> ${state.currentEx.s}`;
+        renderAprendeRow();
+    }
+
+    function renderAprendeRow() {
+        const ex = state.currentEx;
+        const row = document.createElement('div');
+        row.className = "step-row current"; row.id = "active-step";
+        document.getElementById('aprende-instr').innerText = "Toca el número naranja para realizar el movimiento.";
+        if(ex.type === 'simple') row.innerHTML = `<div>x</div><div>${ex.op}</div><div class="highlight-box" onclick="moveSimple()">${ex.r}</div><div>=</div><div>${ex.target}</div>`;
+        else if(ex.type === 'div') row.innerHTML = `<div class="highlight-box" onclick="moveDiv()">${ex.l}</div><div>x</div><div>=</div><div>${ex.target}</div>`;
+        else if(ex.type === 'mult') row.innerHTML = `<div class="fraction"><span class="num">x</span><span class="den highlight-box" onclick="moveMult()">${ex.l}</span></div><div>=</div><div>${ex.target}</div>`;
+        else if(ex.type === 'c_mult' || ex.type === 'c_div') {
+            if(state.subStep === 0) row.innerHTML = `<div>${ex.expr.split('+')[0]}</div><div>+</div><div class="highlight-box" onclick="moveC1()">${ex.r}</div><div>=</div><div>${ex.target}</div>`;
+            else {
+                const v = ex.target - ex.r;
+                if(ex.type === 'c_mult') row.innerHTML = `<div class="highlight-box" onclick="moveC2(${v})">${ex.a}</div><div>x</div><div>=</div><div>${v}</div>`;
+                else row.innerHTML = `<div class="fraction"><span class="num">x</span><span class="den highlight-box" onclick="moveC2(${v})">${ex.l}</span></div><div>=</div><div>${v}</div>`;
+            }
+        }
+        document.getElementById('aprende-history').appendChild(row);
+    }
+
+    function moveSimple() { fixOld(); addRow(`<div>x</div><div>=</div><div>${state.currentEx.target}</div><div style="color:var(--highlight-orange)">${state.currentEx.inv}</div><div class="highlight-box" onclick="finishAprende()">${state.currentEx.r}</div>`); }
+    function moveDiv() { fixOld(); addRow(`<div>x</div><div>=</div><div class="fraction"><span class="num">${state.currentEx.target}</span><span class="den highlight-box" onclick="finishAprende()">${state.currentEx.l}</span></div>`); }
+    function moveMult() { fixOld(); addRow(`<div>x</div><div>=</div><div>${state.currentEx.target}</div><div style="color:var(--highlight-orange)">·</div><div class="highlight-box" onclick="finishAprende()">${state.currentEx.l}</div>`); }
+    function moveC1() { fixOld(); state.subStep=1; addRow(`<div>${state.currentEx.expr.split('+')[0]}</div><div>=</div><div>${state.currentEx.target}</div><div style="color:var(--highlight-orange)">-</div><div class="highlight-box" onclick="renderAprendeRow()">${state.currentEx.r}</div>`); }
+    function moveC2(v) { fixOld(); if(state.currentEx.type ==='c_mult') addRow(`<div>x</div><div>=</div><div class="fraction"><span class="num">${v}</span><span class="den highlight-box" onclick="finishAprende()">${state.currentEx.a}</span></div>`); else addRow(`<div>x</div><div>=</div><div>${v}</div><div style="color:var(--highlight-orange)">·</div><div class="highlight-box" onclick="finishAprende()">${state.currentEx.l}</div>`); }
+    function fixOld() { const s = document.getElementById('active-step'); if(s){ s.id=""; s.className="step-row old";} }
+    function addRow(html) { const r = document.createElement('div'); r.className="step-row current"; r.id="active-step"; r.innerHTML=html; document.getElementById('aprende-history').appendChild(r); }
+    function finishAprende() { fixOld(); addRow(`<div style="color:var(--primary-blue)">x = ${state.currentEx.res}</div>`); document.getElementById('btn-next-aprende').classList.remove('hidden'); }
+    function nextAprende() { state.level++; if(state.level < 5) loadAprende(); else showScreen('scr-topic-menu'); }
+
     function loadPractica() {
-        state.currentEx = getEx(state.topic, state.level);
+        state.currentEx = getEx(state.level);
         state.step = 0;
         showScreen('scr-practica');
         document.getElementById('practica-history').innerHTML = `<div class="step-row current">${state.currentEx.expr}</div>`;
@@ -153,7 +196,7 @@
 
     function renderAlts() {
         const correct = state.currentEx.steps[state.step];
-        const alts = [correct, `x = ${rInt()}`, `|x| = ${rInt()}`].sort(() => Math.random() - 0.5);
+        const alts = [correct, genDistractor(correct), genDistractor(correct)].sort(() => Math.random() - 0.5);
         const optCont = document.getElementById('practica-options');
         optCont.innerHTML = "";
         alts.forEach(a => {
@@ -161,33 +204,38 @@
             b.className = "btn-alt"; b.innerText = a;
             b.onclick = () => {
                 if(a === correct) {
-                    document.getElementById('practica-history').lastChild.className = "step-row old";
-                    const row = document.createElement('div'); row.className = "step-row current"; row.innerText = a;
-                    document.getElementById('practica-history').appendChild(row);
+                    const hist = document.getElementById('practica-history');
+                    hist.lastChild.className = "step-row old";
+                    const row = document.createElement('div'); row.className = "step-row current"; row.innerText = correct;
+                    hist.appendChild(row);
                     state.step++;
                     if(state.step < state.currentEx.steps.length) renderAlts();
-                    else {
-                        document.getElementById('practica-zone').classList.add('hidden');
-                        document.getElementById('btn-next-practica').classList.remove('hidden');
-                    }
+                    else { document.getElementById('practica-zone').classList.add('hidden'); document.getElementById('btn-next-practica').classList.remove('hidden'); }
+                    document.getElementById('practica-feedback').classList.add('hidden');
                 } else {
                     const f = document.getElementById('practica-feedback');
-                    f.innerText = "Revisa el procedimiento."; f.className="feedback wrong"; f.classList.remove('hidden');
+                    f.innerText = "¡Casi! Prueba de nuevo."; f.className = "feedback wrong"; f.classList.remove('hidden');
                 }
             };
             optCont.appendChild(b);
         });
     }
 
-    function rInt() { return Math.floor(Math.random() * 20); }
+    function genDistractor(c) {
+        if(c.includes('-')) return c.replace('-', '+');
+        if(c.includes('/')) return c.replace('/', '*');
+        return `x = ${Math.floor(Math.random()*25)}`;
+    }
+
+    function nextPractica() { state.level++; if(state.level < 5) loadPractica(); else showScreen('scr-topic-menu'); }
 
     function renderEval() {
         showScreen('scr-evalua');
         const cont = document.getElementById('evalua-container');
         cont.innerHTML = ""; state.quiz = [];
-        for(let i=0; i<3; i++) {
-            let ex = getEx(state.topic, i); state.quiz.push(ex);
-            cont.innerHTML += `<div class="report-card">Pregunta ${i+1}: ${ex.expr}<br><input type="number" id="ev-${i}" placeholder="Valor de x"></div>`;
+        for(let i=0; i<5; i++) {
+            let ex = getEx(i); state.quiz.push(ex);
+            cont.innerHTML += `<div class="report-card"><strong>Reto ${i+1}:</strong> ${ex.s}<br><div class="step-row">${ex.expr}</div><input type="number" id="ev-${i}" placeholder="Valor de x"></div>`;
         }
     }
 
@@ -195,22 +243,17 @@
         let nota = 0; const details = document.getElementById('report-details'); details.innerHTML = "";
         state.quiz.forEach((ex, i) => {
             let val = parseInt(document.getElementById(`ev-${i}`).value);
-            // Lógica Corregida: Verifica ambos signos para Valor Absoluto
-            let isCorrect = ex.isVA ? (Math.abs(val) === ex.res) : (val === ex.res);
-            if(isCorrect) nota++;
-            details.innerHTML += `
-                <div class="report-card">
-                    ${isCorrect?'✅':'❌'} Pregunta ${i+1}: ${ex.expr}<br>
-                    Tu respuesta: x = ${val} | Correcta: x = ${ex.res} ${ex.isVA ? 'o x = -' + ex.res : ''}
-                </div>`;
+            let ok = val === ex.res; if(ok) nota++;
+            details.innerHTML += `<div class="report-card">${ok?'✅':'❌'} Reto ${i+1}: x = ${ex.res}</div>`;
         });
-        document.getElementById('report-score').innerText = `${nota} / ${state.quiz.length}`;
+        document.getElementById('report-score').innerText = `${nota}/5`;
         showScreen('scr-report');
     }
 
-    function nextPractica() { state.level++; if(state.level < 3) loadPractica(); else showScreen('scr-topic-menu'); }
-    function goBack() { showScreen('scr-topic-menu'); }
-    function sendWA() { window.open(`https://wa.me/56961410052?text=Reporte de ${state.name}`); }
+    function sendWA() {
+        const msg = `*REPORTE ECUACIONES*\nEstudiante: ${state.name}\nLogro: ${document.getElementById('report-score').innerText}`;
+        window.open(`https://wa.me/56961410052?text=${encodeURIComponent(msg)}`);
+    }
 </script>
 </body>
 </html>
