@@ -38,19 +38,15 @@
         .step-row.current { background: var(--attention-yellow); border-radius: 12px; color: var(--primary-blue); }
         .step-row.old { opacity: 0.4; font-size: 1.2rem; }
 
-        .fraction { display: inline-flex; flex-direction: column; align-items: center; vertical-align: middle; line-height: 1; margin: 0 5px; }
-        .num { border-bottom: 3px solid var(--primary-blue); padding: 0 10px; width: 100%; text-align: center; }
-        .den { padding: 0 10px; width: 100%; text-align: center; }
-
         .highlight-box { background: var(--highlight-orange); color: white; padding: 4px 12px; border-radius: 8px; cursor: pointer; }
         
         input { width: 100%; padding: 14px; margin: 10px 0; border-radius: 12px; border: 2px solid #cbd5e1; font-size: 1rem; }
         .feedback { font-weight: bold; padding: 15px; border-radius: 12px; margin-top: 15px; text-align: center; }
-        .correct { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
-        .wrong { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+        .correct-bg { background: #dcfce7; border: 1px solid #86efac; }
+        .wrong-bg { background: #fee2e2; border: 1px solid #fca5a5; }
 
-        .report-card { background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 16px; margin-bottom: 12px; }
-        .sol-detail { background: #ffffff; padding: 12px; border-radius: 10px; margin-top: 10px; display: none; font-family: 'Courier New', monospace; border: 1px solid var(--action-cyan); }
+        .report-card { background: #f8fafc; border: 1px solid #e2e8f0; padding: 15px; border-radius: 16px; margin-bottom: 12px; position: relative; }
+        .sol-detail { background: #ffffff; padding: 12px; border-radius: 10px; margin-top: 10px; display: none; font-family: 'Courier New', monospace; border: 1px solid var(--action-cyan); white-space: pre-wrap; color: var(--primary-blue); font-weight: bold; }
 
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
         .hidden { display: none; }
@@ -65,9 +61,6 @@
     </div>
 
     <div id="scr-welcome" class="screen active">
-        <div style="text-align:center; margin-bottom: 20px;">
-            <p>¡Hola! Soy el Profesor Mauricio y hoy dominaremos las ecuaciones juntos.</p>
-        </div>
         <input type="text" id="user-name" placeholder="Escribe tu nombre aquí...">
         <button class="btn-main" onclick="goToMenu()">Comenzar Clase</button>
     </div>
@@ -90,7 +83,6 @@
         <div class="story-box" id="practica-story"></div>
         <div id="practica-history" class="history-container"></div>
         <div id="practica-zone">
-            <p style="text-align:center; font-weight:bold">Elige el paso correcto:</p>
             <div id="practica-options" style="display:grid; gap:10px"></div>
             <div id="practica-feedback" class="feedback hidden"></div>
         </div>
@@ -98,17 +90,17 @@
     </div>
 
     <div id="scr-evalua" class="screen">
-        <h3 style="text-align:center">Evaluación de Ecuaciones</h3>
+        <h3 style="text-align:center">Evaluación Final</h3>
         <div id="evalua-container"></div>
-        <button class="btn-main" style="background:var(--highlight-orange); border-color:#c2410c" onclick="gradeEval()">Finalizar y Ver Nota</button>
+        <button class="btn-main" style="background:var(--highlight-orange)" onclick="gradeEval()">Ver Resultados</button>
     </div>
 
     <div id="scr-report" class="screen">
-        <h2 style="text-align:center">Tu Reporte Final</h2>
+        <h2 style="text-align:center">Resultados</h2>
         <div id="report-score" style="text-align:center; font-size: 3.5rem; font-weight:900; color:var(--primary-blue)"></div>
-        <div id="report-details" style="margin-top:20px"></div>
-        <button class="btn-main" onclick="sendWA()">Enviar al Profesor Mauricio</button>
-        <button class="btn-main" style="background:#64748b; border:none" onclick="showScreen('scr-topic-menu')">Volver al Inicio</button>
+        <div id="report-details"></div>
+        <button class="btn-main" onclick="sendWA()">Enviar al Profesor</button>
+        <button class="btn-main" style="background:#64748b; border:none" onclick="showScreen('scr-topic-menu')">Volver al Menú</button>
     </div>
 </div>
 
@@ -119,11 +111,11 @@
         const r = (min, max) => Math.floor(Math.random() * (max - min + 1)) + min;
         let x = r(2, 12);
         switch(lvl) {
-            case 0: let a0 = r(5, 20); return { s:`Si a un número x le sumas ${a0}, obtienes ${x+a0}.`, expr:`x + ${a0} = ${x+a0}`, steps:[`x = ${x+a0} - ${a0}`, `x = ${x}`], res:x, type:'simple', op:'+', inv:'-', r:a0, target:x+a0 };
-            case 1: let a1 = r(2, 8); return { s:`El producto de ${a1} por x es ${a1*x}.`, expr:`${a1}x = ${a1*x}`, steps:[`x = ${a1*x} / ${a1}`, `x = ${x}`], res:x, type:'div', l:a1, target:a1*x };
-            case 2: let a2 = r(2, 5), b2 = r(2, 15); return { s:`${a2} veces x más ${b2} es igual a ${a2*x+b2}.`, expr:`${a2}x + ${b2} = ${a2*x+b2}`, steps:[`${a2}x = ${a2*x+b2} - ${b2}`, `${a2}x = ${a2*x}`, `x = ${a2*x} / ${a2}`, `x = ${x}`], res:x, type:'c_mult', a:a2, r:b2, target:a2*x+b2 };
-            case 3: let a3 = r(2, 10); return { s:`La división de x por ${a3} da como resultado ${x}.`, expr:`x / ${a3} = ${x}`, steps:[`x = ${x} * ${a3}`, `x = ${x*a3}`], res:x*a3, type:'mult', l:a3, target:x };
-            case 4: let a4 = r(2, 5), b4 = r(1, 10); return { s:`x dividido en ${a4} sumado con ${b4} es ${x+b4}.`, expr:`x / ${a4} + ${b4} = ${x+b4}`, steps:[`x / ${a4} = ${x+b4} - ${b4}`, `x / ${a4} = ${x}`, `x = ${x} * ${a4}`, `x = ${x*a4}`], res:x*a4, type:'c_div', l:a4, r:b4, target:x+b4 };
+            case 0: let a0 = r(5, 15); return { s:`Si a x le sumas ${a0}, obtienes ${x+a0}.`, expr:`x + ${a0} = ${x+a0}`, steps:[`x = ${x+a0} - ${a0}`, `x = ${x}`], res:x, type:'simple', op:'+', inv:'-', r:a0, target:x+a0 };
+            case 1: let a1 = r(2, 6); return { s:`${a1} veces x es igual a ${a1*x}.`, expr:`${a1}x = ${a1*x}`, steps:[`x = ${a1*x} / ${a1}`, `x = ${x}`], res:x, type:'div', l:a1, target:a1*x };
+            case 2: let a2 = r(2, 4), b2 = r(2, 10); return { s:`El triple de x más ${b2} es ${a2*x+b2}.`, expr:`${a2}x + ${b2} = ${a2*x+b2}`, steps:[`${a2}x = ${a2*x+b2} - ${b2}`, `${a2}x = ${a2*x}`, `x = ${a2*x} / ${a2}`, `x = ${x}`], res:x, type:'c_mult', a:a2, r:b2, target:a2*x+b2 };
+            case 3: let a3 = r(2, 8); return { s:`x dividido por ${a3} es igual a ${x}.`, expr:`x / ${a3} = ${x}`, steps:[`x = ${x} * ${a3}`, `x = ${x*a3}`], res:x*a3, type:'mult', l:a3, target:x };
+            case 4: let a4 = r(2, 4), b4 = r(1, 10); return { s:`x entre ${a4} más ${b4} resulta en ${x+b4}.`, expr:`x / ${a4} + ${b4} = ${x+b4}`, steps:[`x / ${a4} = ${x+b4} - ${b4}`, `x / ${a4} = ${x}`, `x = ${x} * ${a4}`, `x = ${x*a4}`], res:x*a4, type:'c_div', l:a4, r:b4, target:x+b4 };
         }
     }
 
@@ -133,7 +125,6 @@
         document.getElementById('global-back').classList.toggle('hidden', id === 'scr-welcome' || id === 'scr-report');
     }
 
-    function goBack() { showScreen('scr-topic-menu'); }
     function goToMenu() { state.name = document.getElementById('user-name').value || "Estudiante"; showScreen('scr-topic-menu'); }
 
     function startMode(m) {
@@ -143,13 +134,14 @@
         else renderEval();
     }
 
+    // --- LÓGICA APRENDE ---
     function loadAprende() {
         state.currentEx = getEx(state.level);
         state.subStep = 0;
         showScreen('scr-aprende');
         document.getElementById('aprende-history').innerHTML = "";
         document.getElementById('btn-next-aprende').classList.add('hidden');
-        document.getElementById('aprende-story').innerHTML = `<strong>Nivel ${state.level+1}:</strong> ${state.currentEx.s}`;
+        document.getElementById('aprende-story').innerHTML = `<b>Reto ${state.level+1}:</b> ${state.currentEx.s}`;
         renderAprendeRow();
     }
 
@@ -157,37 +149,38 @@
         const ex = state.currentEx;
         const row = document.createElement('div');
         row.className = "step-row current"; row.id = "active-step";
-        document.getElementById('aprende-instr').innerText = "Toca el número naranja para realizar el movimiento.";
-        if(ex.type === 'simple') row.innerHTML = `<div>x</div><div>${ex.op}</div><div class="highlight-box" onclick="moveSimple()">${ex.r}</div><div>=</div><div>${ex.target}</div>`;
-        else if(ex.type === 'div') row.innerHTML = `<div class="highlight-box" onclick="moveDiv()">${ex.l}</div><div>x</div><div>=</div><div>${ex.target}</div>`;
-        else if(ex.type === 'mult') row.innerHTML = `<div class="fraction"><span class="num">x</span><span class="den highlight-box" onclick="moveMult()">${ex.l}</span></div><div>=</div><div>${ex.target}</div>`;
+        document.getElementById('aprende-instr').innerText = "Toca el número naranja.";
+        if(ex.type === 'simple') row.innerHTML = `x + <span class="highlight-box" onclick="moveSimple()">${ex.r}</span> = ${ex.target}`;
+        else if(ex.type === 'div') row.innerHTML = `<span class="highlight-box" onclick="moveDiv()">${ex.l}</span>x = ${ex.target}`;
+        else if(ex.type === 'mult') row.innerHTML = `x / <span class="highlight-box" onclick="moveMult()">${ex.l}</span> = ${ex.target}`;
         else if(ex.type === 'c_mult' || ex.type === 'c_div') {
-            if(state.subStep === 0) row.innerHTML = `<div>${ex.expr.split('+')[0]}</div><div>+</div><div class="highlight-box" onclick="moveC1()">${ex.r}</div><div>=</div><div>${ex.target}</div>`;
+            if(state.subStep === 0) row.innerHTML = `${ex.expr.split('+')[0]} + <span class="highlight-box" onclick="moveC1()">${ex.r}</span> = ${ex.target}`;
             else {
                 const v = ex.target - ex.r;
-                if(ex.type === 'c_mult') row.innerHTML = `<div class="highlight-box" onclick="moveC2(${v})">${ex.a}</div><div>x</div><div>=</div><div>${v}</div>`;
-                else row.innerHTML = `<div class="fraction"><span class="num">x</span><span class="den highlight-box" onclick="moveC2(${v})">${ex.l}</span></div><div>=</div><div>${v}</div>`;
+                if(ex.type === 'c_mult') row.innerHTML = `<span class="highlight-box" onclick="moveC2(${v})">${ex.a}</span>x = ${v}`;
+                else row.innerHTML = `x / <span class="highlight-box" onclick="moveC2(${v})">${ex.l}</span> = ${v}`;
             }
         }
         document.getElementById('aprende-history').appendChild(row);
     }
 
-    function moveSimple() { fixOld(); addRow(`<div>x</div><div>=</div><div>${state.currentEx.target}</div><div style="color:var(--highlight-orange)">${state.currentEx.inv}</div><div class="highlight-box" onclick="finishAprende()">${state.currentEx.r}</div>`); }
-    function moveDiv() { fixOld(); addRow(`<div>x</div><div>=</div><div class="fraction"><span class="num">${state.currentEx.target}</span><span class="den highlight-box" onclick="finishAprende()">${state.currentEx.l}</span></div>`); }
-    function moveMult() { fixOld(); addRow(`<div>x</div><div>=</div><div>${state.currentEx.target}</div><div style="color:var(--highlight-orange)">·</div><div class="highlight-box" onclick="finishAprende()">${state.currentEx.l}</div>`); }
-    function moveC1() { fixOld(); state.subStep=1; addRow(`<div>${state.currentEx.expr.split('+')[0]}</div><div>=</div><div>${state.currentEx.target}</div><div style="color:var(--highlight-orange)">-</div><div class="highlight-box" onclick="renderAprendeRow()">${state.currentEx.r}</div>`); }
-    function moveC2(v) { fixOld(); if(state.currentEx.type ==='c_mult') addRow(`<div>x</div><div>=</div><div class="fraction"><span class="num">${v}</span><span class="den highlight-box" onclick="finishAprende()">${state.currentEx.a}</span></div>`); else addRow(`<div>x</div><div>=</div><div>${v}</div><div style="color:var(--highlight-orange)">·</div><div class="highlight-box" onclick="finishAprende()">${state.currentEx.l}</div>`); }
+    function moveSimple() { fixOld(); addRow(`x = ${state.currentEx.target} - ${state.currentEx.r}`); setTimeout(finishAprende, 600); }
+    function moveDiv() { fixOld(); addRow(`x = ${state.currentEx.target} / ${state.currentEx.l}`); setTimeout(finishAprende, 600); }
+    function moveMult() { fixOld(); addRow(`x = ${state.currentEx.target} · ${state.currentEx.l}`); setTimeout(finishAprende, 600); }
+    function moveC1() { fixOld(); state.subStep=1; addRow(`${state.currentEx.expr.split('+')[0]} = ${state.currentEx.target} - ${state.currentEx.r}`); setTimeout(renderAprendeRow, 600); }
+    function moveC2(v) { fixOld(); if(state.currentEx.type ==='c_mult') addRow(`x = ${v} / ${state.currentEx.a}`); else addRow(`x = ${v} · ${state.currentEx.l}`); setTimeout(finishAprende, 600); }
     function fixOld() { const s = document.getElementById('active-step'); if(s){ s.id=""; s.className="step-row old";} }
-    function addRow(html) { const r = document.createElement('div'); r.className="step-row current"; r.id="active-step"; r.innerHTML=html; document.getElementById('aprende-history').appendChild(r); }
-    function finishAprende() { fixOld(); addRow(`<div style="color:var(--primary-blue)">x = ${state.currentEx.res}</div>`); document.getElementById('btn-next-aprende').classList.remove('hidden'); }
+    function addRow(txt) { const r = document.createElement('div'); r.className="step-row current"; r.id="active-step"; r.innerText=txt; document.getElementById('aprende-history').appendChild(r); }
+    function finishAprende() { fixOld(); addRow(`x = ${state.currentEx.res}`); document.getElementById('btn-next-aprende').classList.remove('hidden'); }
     function nextAprende() { state.level++; if(state.level < 5) loadAprende(); else showScreen('scr-topic-menu'); }
 
+    // --- LÓGICA PRÁCTICA ---
     function loadPractica() {
         state.currentEx = getEx(state.level);
         state.step = 0;
         showScreen('scr-practica');
         document.getElementById('practica-history').innerHTML = `<div class="step-row current">${state.currentEx.expr}</div>`;
-        document.getElementById('practica-story').innerText = state.currentEx.s;
+        document.getElementById('practica-story').innerHTML = `<b>Nivel ${state.level+1}:</b> ${state.currentEx.s}`;
         document.getElementById('btn-next-practica').classList.add('hidden');
         document.getElementById('practica-zone').classList.remove('hidden');
         document.getElementById('practica-feedback').classList.add('hidden');
@@ -214,7 +207,7 @@
                     document.getElementById('practica-feedback').classList.add('hidden');
                 } else {
                     const f = document.getElementById('practica-feedback');
-                    f.innerText = "¡Casi! Prueba de nuevo."; f.className = "feedback wrong"; f.classList.remove('hidden');
+                    f.innerText = "¡Inténtalo de nuevo!"; f.className = "feedback wrong-bg"; f.classList.remove('hidden');
                 }
             };
             optCont.appendChild(b);
@@ -224,36 +217,62 @@
     function genDistractor(c) {
         if(c.includes('-')) return c.replace('-', '+');
         if(c.includes('/')) return c.replace('/', '*');
-        return `x = ${Math.floor(Math.random()*25)}`;
+        return `x = ${Math.floor(Math.random()*30)}`;
     }
 
     function nextPractica() { state.level++; if(state.level < 5) loadPractica(); else showScreen('scr-topic-menu'); }
 
+    // --- LÓGICA EVALUACIÓN + FEEDBACK ---
     function renderEval() {
         showScreen('scr-evalua');
         const cont = document.getElementById('evalua-container');
         cont.innerHTML = ""; state.quiz = [];
         for(let i=0; i<5; i++) {
             let ex = getEx(i); state.quiz.push(ex);
-            cont.innerHTML += `<div class="report-card"><strong>Reto ${i+1}:</strong> ${ex.s}<br><div class="step-row">${ex.expr}</div><input type="number" id="ev-${i}" placeholder="Valor de x"></div>`;
+            cont.innerHTML += `<div class="report-card"><b>Ejercicio ${i+1}:</b><br><div class="step-row">${ex.expr}</div><input type="number" id="ev-${i}" placeholder="Resultado x = ?"></div>`;
         }
     }
 
     function gradeEval() {
-        let nota = 0; const details = document.getElementById('report-details'); details.innerHTML = "";
+        let nota = 0; 
+        const details = document.getElementById('report-details'); 
+        details.innerHTML = "";
+        
         state.quiz.forEach((ex, i) => {
-            let val = parseInt(document.getElementById(`ev-${i}`).value);
-            let ok = val === ex.res; if(ok) nota++;
-            details.innerHTML += `<div class="report-card">${ok?'✅':'❌'} Reto ${i+1}: x = ${ex.res}</div>`;
+            let valInput = document.getElementById(`ev-${i}`).value;
+            let val = parseInt(valInput);
+            let ok = val === ex.res; 
+            if(ok) nota++;
+            
+            details.innerHTML += `
+                <div class="report-card ${ok?'correct-bg':'wrong-bg'}">
+                    <div style="display:flex; justify-content:space-between; align-items:center">
+                        <strong>Ecuación ${i+1}: ${ex.expr}</strong>
+                        <span>${ok?'✅':'❌'}</span>
+                    </div>
+                    <p>Tu respuesta: x = ${valInput || '?'}</p>
+                    <button class="btn-alt" style="width:100%; padding:8px; font-size:0.9rem" onclick="toggleSol(${i})">
+                        Ver Explicación Paso a Paso
+                    </button>
+                    <div id="sol-${i}" class="sol-detail">${ex.steps.join('\n')}</div>
+                </div>`;
         });
-        document.getElementById('report-score').innerText = `${nota}/5`;
+        
+        document.getElementById('report-score').innerText = `${nota} / 5`;
         showScreen('scr-report');
     }
 
+    function toggleSol(i) {
+        const el = document.getElementById(`sol-${i}`);
+        el.style.display = el.style.display === 'block' ? 'none' : 'block';
+    }
+
     function sendWA() {
-        const msg = `*REPORTE ECUACIONES*\nEstudiante: ${state.name}\nLogro: ${document.getElementById('report-score').innerText}`;
+        const msg = `*REPORTE PROF. MAURICIO*\nAlumno: ${state.name}\nNota: ${document.getElementById('report-score').innerText}`;
         window.open(`https://wa.me/56961410052?text=${encodeURIComponent(msg)}`);
     }
+
+    function goBack() { showScreen('scr-topic-menu'); }
 </script>
 </body>
 </html>
