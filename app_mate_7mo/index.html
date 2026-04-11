@@ -1,1 +1,322 @@
+!DOCTYPE html
+html lang=es
+head
+    meta charset=UTF-8
+    meta name=viewport content=width=device-width, initial-scale=1.0
+    titleMr.Veit - Equilibria Platformtitle
+    style
+        root {
+            --bg-warm #fffdfa;
+            --paper #ffffff;
+            --text-dark #451a03;
+            --mrveit #d97706;
+            --accent #f59e0b;
+            --success #059669;
+            --action-blue #3b82f6;
+            --trace #e2e8f0;
+            --danger #ef4444;
+        }
 
+        body { font-family 'Segoe UI', system-ui, sans-serif; background-color var(--bg-warm); margin 0; display flex; justify-content center; min-height 100vh; color var(--text-dark); }
+        #app { background var(--paper); width 95%; max-width 650px; margin 20px; border-radius 24px; box-shadow 0 15px 35px rgba(69, 26, 3, 0.1); padding 25px; border 4px solid var(--mrveit); display flex; flex-direction column; }
+        
+        .logo-container { text-align center; margin-bottom 20px; }
+        .logo { font-size 2.2rem; font-weight 900; color var(--mrveit); margin 0; }
+        .teacher-tag { font-size 0.9rem; color #92400e; font-weight 600; text-transform uppercase; letter-spacing 1px; }
+
+        .screen { display none; animation fadeIn 0.4s ease; }
+        .active { display block; }
+
+         Botones Modernos 
+        .menu-grid { display grid; gap 15px; margin-top 20px; }
+        .btn-main { 
+            background white; border 2px solid var(--trace); padding 20px; border-radius 16px; 
+            font-size 1.2rem; font-weight bold; cursor pointer; transition all 0.2s;
+            display flex; align-items center; justify-content space-between; color var(--text-dark);
+            box-shadow 0 4px 0 var(--trace);
+        }
+        .btn-mainhover { border-color var(--accent); transform translateY(-2px); box-shadow 0 6px 0 var(--trace); }
+        .btn-mainactive { transform translateY(2px); box-shadow 0 0 0 var(--trace); }
+        .btn-main i { font-size 1.5rem; color var(--accent); }
+
+        .btn-topic { 
+            background var(--mrveit); color white; border none; padding 18px; 
+            border-radius 12px; font-weight bold; cursor pointer; margin-bottom 10px;
+            width 100%; font-size 1.1rem;
+        }
+        .btn-secondary { background #64748b; }
+
+         Contenedores de interacción 
+        .story-box { background #fffbeb; border-left 5px solid var(--accent); padding 15px; border-radius 8px; margin-bottom 15px; }
+        .history-container { display flex; flex-direction column; gap 10px; margin 20px 0; padding 15px; background #fdfbf7; border-radius 15px; border 1px solid #eee; }
+        .step-row { display flex; justify-content center; align-items center; gap 15px; font-size 1.6rem; padding 10px; border-bottom 1px dashed var(--trace); }
+        .step-row.current { border-bottom none; background #fffbeb; border-radius 10px; border 2px solid var(--accent); }
+        .step-row.old { opacity 0.5; font-size 1.2rem; }
+
+         Reporte de Evaluación 
+        .report-card { background white; border 1px solid var(--trace); border-radius 12px; padding 15px; margin-bottom 10px; text-align left; }
+        .report-header { display flex; justify-content space-between; align-items center; border-bottom 1px solid #eee; padding-bottom 8px; margin-bottom 10px; }
+        .solution-box { background #f8fafc; padding 10px; border-radius 8px; font-family monospace; font-size 0.9rem; display none; margin-top 10px; border-left 3px solid var(--action-blue); }
+
+         Math UI 
+        .draggable { background var(--accent); color white; padding 5px 12px; border-radius 8px; cursor grab; }
+        .drop-zone { width 60px; height 60px; border 2px dashed #cbd5e1; border-radius 8px; display flex; justify-content center; align-items center; background #f8fafc; }
+        .btn-op { background var(--danger); color white; padding 4px 12px; border-radius 8px; cursor pointer; }
+        .fraction { display inline-flex; flex-direction column; align-items center; vertical-align middle; }
+        .num { border-bottom 2px solid var(--text-dark); padding 0 5px; }
+        
+        @keyframes fadeIn { from { opacity 0; transform translateY(10px); } to { opacity 1; transform translateY(0); } }
+        .hidden { display none; }
+        input { width 100%; padding 12px; margin 8px 0; border-radius 10px; border 1px solid #ccc; box-sizing border-box; }
+    style
+head
+body
+
+div id=app
+    div class=logo-container
+        div class=teacher-tagProfesor Mauriciodiv
+        h1 class=logoEquilibria Proh1
+    div
+
+    div id=scr-welcome class=screen active
+        h3 style=text-aligncenter¡Hola! Prepárate para aprender de forma fácil.h3
+        input type=text id=user-name placeholder=Tu nombre y apellido
+        button class=btn-topic onclick=goToMenu()Ingresar al Sistemabutton
+    div
+
+    div id=scr-main-menu class=screen
+        h3 style=text-aligncenterSelecciona un tema para hoyh3
+        div class=menu-grid
+            button class=btn-main onclick=openTopic('ecuaciones')
+                span1. Ecuacionesspan
+                span🧮span
+            button
+            button class=btn-main onclick=openTopic('valor-absoluto')
+                span2. Valor Absolutospan
+                spanxspan
+            button
+            button class=btn-main style=opacity0.5; cursornot-allowed
+                spanPróximamente...span
+                span🚀span
+            button
+        div
+    div
+
+    div id=scr-topic-menu class=screen
+        button class=secondary-btn style=margin-bottom10px; bordernone; backgroundnone; colorvar(--action-blue); cursorpointer onclick=showScreen('scr-main-menu')← Volver al iniciobutton
+        h2 id=topic-title style=text-aligncenterEcuacionesh2
+        div class=menu-grid
+            button class=btn-topic onclick=startSession('aprende')1. Aprendamos (Guía Interactiva)button
+            button class=btn-topic style=backgroundvar(--action-blue) onclick=startSession('practica')2. Practiquemos (Paso a Paso)button
+            button class=btn-topic style=backgroundvar(--success) onclick=startSession('evalua')3. Evalúate (Test Final)button
+        div
+    div
+
+    div id=scr-interact class=screen
+        div class=story-box id=int-storydiv
+        p id=int-instr style=text-aligncenter; font-weightbold; colorvar(--mrveit)p
+        div class=history-container id=int-historydiv
+        button id=btn-next-step class=hidden onclick=nextLevel()Siguiente Ejercicio →button
+    div
+
+    div id=scr-quiz class=screen
+        h3 style=text-aligncenterDesafío Finalh3
+        div id=quiz-containerdiv
+        button class=btn-topic style=backgroundvar(--success) onclick=gradeQuiz()Finalizar y Ver Reportebutton
+    div
+
+    div id=scr-report class=screen
+        h2 style=text-aligncenterTu Desempeñoh2
+        div id=report-score style=text-aligncenter; font-size 2.5rem; font-weight bold; margin-bottom 20px;div
+        div id=report-listdiv
+        button class=btn-topic onclick=enviarReporte()Enviar a Mr.Veit por WhatsAppbutton
+        button class=btn-topic btn-secondary onclick=showScreen('scr-main-menu')Volver al Menúbutton
+    div
+div
+
+script
+    let state = {
+        name ,
+        topic ,  'ecuaciones' o 'valor-absoluto'
+        mode ,   'aprende', 'practica', 'evalua'
+        level 0,
+        currentExercise null,
+        results []
+    };
+
+     --- NAVEGACIÓN ---
+    function showScreen(id) {
+        document.querySelectorAll('.screen').forEach(s = s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+    }
+
+    function goToMenu() {
+        state.name = document.getElementById('user-name').value;
+        if(!state.name) return alert(Por favor ingresa tu nombre);
+        showScreen('scr-main-menu');
+    }
+
+    function openTopic(topicId) {
+        state.topic = topicId;
+        document.getElementById('topic-title').innerText = topicId === 'ecuaciones'  Ecuaciones  Valor Absoluto;
+        showScreen('scr-topic-menu');
+    }
+
+     --- GENERADOR DE CONTENIDO ---
+    function getExercise(topic, level) {
+        const seed = Math.floor(Math.random()  5) + 2;
+        const b = Math.floor(Math.random()  8) + 1;
+        
+        if(topic === 'ecuaciones') {
+            switch(level) {
+                case 0 return { type'simple', s`Tenías x, ganaste ${b}. Ahora tienes ${seed+b}.`, q¿Cuánto tenías, l'x', op'+', rb, targetseed+b, inv'-', resseed, sol`x + ${b} = ${seed+b} n x = ${seed+b} - ${b} n x = ${seed}` };
+                case 1 return { type'div', s`${seed} cajas con x lápices cada una. Total ${seedb}.`, q¿Cuántos por caja, lseed, op'·', r'x', targetseedb, inv'÷', resb, sol`${seed}x = ${seedb} n x = ${seedb}  ${seed} n x = ${b}` };
+                case 2 return { type'complejo', s`El triple de x más ${b} es ${3seed+b}.`, q¿Cuál es x, l'3x', op'+', rb, target3seed+b, inv'-', resseed, a_val3, sol`3x + ${b} = ${3seed+b} n 3x = ${3seed} n x = ${3seed}  3 n x = ${seed}` };
+            }
+        } else {
+             Valor Absoluto
+            switch(level) {
+                case 0 return { type'abs_simple', s`La distancia de x al origen es ${seed}.`, q¿Qué valores puede tener x, expr`x = ${seed}`, res`${seed} o -${seed}`, sol`x = ${seed} implica que x puede estar a ${seed} unidades a la derecha o izquierda del cero.` };
+                case 1 return { type'abs_eq', s`La distancia entre x y ${b} es ${seed}.`, q¿Cuál es el valor positivo de x, expr`x - ${b} = ${seed}`, resseed+b, sol`x - ${b} = ${seed} n x - ${b} = ${seed} n x = ${seed} + ${b} n x = ${seed+b}` };
+                case 2 return { type'abs_op', s`El valor absoluto de x multiplicado por 2 es ${seed2}.`, q¿Cuál es el valor absoluto, expr`2x = ${seed2}`, resseed, sol`2x = ${seed2} n x = ${seed2}  2 n x = ${seed}` };
+            }
+        }
+    }
+
+     --- LÓGICA DE SESIÓN ---
+    function startSession(mode) {
+        state.mode = mode;
+        state.level = 0;
+        state.results = [];
+        if(mode === 'evalua') {
+            renderQuiz();
+        } else {
+            loadInteract();
+        }
+    }
+
+    function loadInteract() {
+        state.currentExercise = getExercise(state.topic, state.level);
+        showScreen('scr-interact');
+        document.getElementById('int-history').innerHTML = ;
+        document.getElementById('int-story').innerHTML = `strong${state.currentExercise.s}strongbr${state.currentExercise.q}`;
+        document.getElementById('btn-next-step').classList.add('hidden');
+        
+         Render inicial según tipo
+        renderStep(state.currentExercise);
+    }
+
+    function renderStep(ex) {
+        const row = document.createElement('div');
+        row.className = step-row current;
+        row.id = active-row;
+        
+        if(ex.type === 'simple') {
+            document.getElementById('int-instr').innerText = Arrastra el número al otro lado.;
+            row.innerHTML = `divxdivdiv${ex.op}divdiv class=draggable draggable=true ondragstart=drag(event)${ex.r}divdiv=divdiv${ex.target}divdiv class=drop-zone ondrop=dropSimple(event) ondragover=allow(event)div`;
+        } else if(ex.type === 'abs_simple') {
+            document.getElementById('int-instr').innerText = Resuelve el valor absoluto.;
+            row.innerHTML = `div${ex.expr}divdiv class=btn-op onclick=finishLevel()Resolverdiv`;
+        } else {
+             Lógica similar para otros tipos...
+            row.innerHTML = `div${ex.l  ex.expr}divdiv=divdiv${ex.target  ex.res}div div class=btn-op onclick=finishLevel()Continuardiv`;
+        }
+        document.getElementById('int-history').appendChild(row);
+    }
+
+     --- EVENTOS DRAG & DROP ---
+    function drag(e) { e.dataTransfer.setData(text, e.target.id); }
+    function allow(e) { e.preventDefault(); }
+    
+    function dropSimple(e) {
+        e.preventDefault();
+        const ex = state.currentExercise;
+        fixStep();
+        const row = document.createElement('div');
+        row.className = step-row current; row.id = active-row;
+        row.innerHTML = `divxdivdiv=divdiv${ex.target}divdiv class=btn-op onclick=finishLevel()${ex.inv}divdiv${ex.r}div`;
+        document.getElementById('int-history').appendChild(row);
+        document.getElementById('int-instr').innerText = Toca la operación para el resultado final.;
+    }
+
+    function fixStep() {
+        const old = document.getElementById('active-row');
+        if(old) { old.id = ; old.className = step-row old; }
+    }
+
+    function finishLevel() {
+        fixStep();
+        const row = document.createElement('div');
+        row.className = step-row current;
+        row.innerHTML = `divResultadodivdiv style=colorvar(--success)${state.currentExercise.res}div`;
+        document.getElementById('int-history').appendChild(row);
+        document.getElementById('btn-next-step').classList.remove('hidden');
+        document.getElementById('int-instr').innerText = ¡Excelente rastro!;
+    }
+
+    function nextLevel() {
+        state.level++;
+        if(state.level  3) loadInteract();
+        else showScreen('scr-topic-menu');
+    }
+
+     --- EVALUACIÓN Y REPORTE ---
+    function renderQuiz() {
+        showScreen('scr-quiz');
+        const container = document.getElementById('quiz-container');
+        container.innerHTML = ;
+        state.quizData = [];
+        for(let i=0; i3; i++) {
+            const ex = getExercise(state.topic, i);
+            state.quizData.push(ex);
+            container.innerHTML += `
+                div class=story-box style=backgroundwhite
+                    p${ex.s} strong${ex.q}strongp
+                    input type=text id=ans-${i} placeholder=Tu respuesta
+                div
+            `;
+        }
+    }
+
+    function gradeQuiz() {
+        let correct = 0;
+        const reportList = document.getElementById('report-list');
+        reportList.innerHTML = ;
+        
+        state.quizData.forEach((ex, i) = {
+            const userAns = document.getElementById(`ans-${i}`).value;
+            const isCorrect = userAns.toString().trim() === ex.res.toString().trim();
+            if(isCorrect) correct++;
+            
+            reportList.innerHTML += `
+                div class=report-card
+                    div class=report-header
+                        strongEjercicio ${i+1}strong
+                        span style=color${isCorrect  'var(--success)'  'var(--danger)'}${isCorrect  '✔ Correcto'  '✘ Incorrecto'}span
+                    div
+                    p${ex.s}p
+                    pTu respuesta ${userAns  'Vacío'}p
+                    button class=secondary-btn style=padding5px; font-size0.8rem onclick=toggleSol(${i})Ver solución paso a pasobutton
+                    div id=sol-${i} class=solution-box${ex.sol.replace(ng, 'br')}div
+                div
+            `;
+        });
+
+        state.finalScore = correct;
+        document.getElementById('report-score').innerText = `${correct}  3`;
+        showScreen('scr-report');
+    }
+
+    function toggleSol(i) {
+        const el = document.getElementById(`sol-${i}`);
+        el.style.display = el.style.display === 'block'  'none'  'block';
+    }
+
+    function enviarReporte() {
+        const msg = `REPORTE EQUILIBRIAnEstudiante ${state.name}nTema ${state.topic}nNota ${state.finalScore}3`;
+        window.open(`httpswa.me56961410052text=${encodeURIComponent(msg)}`);
+    }
+script
+
+body
+html
