@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Absoluto Equilibrio - Manuel 7mo</title>
+    <style>
+        :root {
+            --bg-crema: #fffbf2;
+            --primario-ambar: #ffbf69;
+            --acento-naranja: #ff9f1c;
+            --texto: #5f4b32;
+            --blanco: #ffffff;
+            --verde-exito: #2ec4b6;
+            --rojo-error: #e71d36;
+            --sombra: rgba(255, 159, 28, 0.15);
+        }
+
+        body {
+            font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-crema);
+            color: var(--texto);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        #app-container {
+            background: var(--blanco);
+            width: 90%;
+            max-width: 500px;
+            padding: 30px;
+            border-radius: 30px;
+            box-shadow: 0 15px 35px var(--sombra);
+            text-align: center;
+            border: 3px solid var(--primario-ambar);
+        }
+
+        h1 { color: var(--acento-naranja); margin-bottom: 10px; font-size: 1.8rem; }
+        .progreso { font-size: 0.9rem; color: #a39171; margin-bottom: 20px; }
+
+        /* Estilos Matemáticos */
+        .math-box {
+            font-size: 2.2rem;
+            margin: 25px 0;
+            font-weight: bold;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .abs {
+            border-left: 3px solid var(--texto);
+            border-right: 3px solid var(--texto);
+            padding: 0 8px;
+            display: inline-block;
+        }
+
+        .frac {
+            display: inline-flex;
+            flex-direction: column;
+            vertical-align: middle;
+            font-size: 1.5rem;
+        }
+        .num { border-bottom: 2px solid var(--texto); padding: 0 5px; }
+        .den { padding: 0 5px; }
+
+        /* Botones y Alternativas */
+        .opciones-grid { display: grid; gap: 15px; margin-top: 20px; }
+        
+        .btn-alternativa {
+            background: var(--blanco);
+            border: 2px solid var(--primario-ambar);
+            padding: 15px;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            color: var(--texto);
+        }
+
+        .btn-alternativa:hover { background: var(--bg-crema); transform: translateY(-2px); }
+        .btn-alternativa.correcta { background: var(--verde-exito); color: white; border-color: var(--verde-exito); }
+        .btn-alternativa.incorrecta { background: var(--rojo-error); color: white; border-color: var(--rojo-error); }
+
+        .feedback-area {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 15px;
+            display: none;
+            animation: fadeIn 0.4s;
+        }
+
+        .paso-a-paso {
+            background: #f8f9fa;
+            border-left: 5px solid var(--acento-naranja);
+            text-align: left;
+            padding: 15px;
+            margin-top: 15px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .btn-accion {
+            background: var(--acento-naranja);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            margin-top: 20px;
+            font-size: 1rem;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<div id="app-container">
+    <div id="pantalla-inicio">
+        <h1>Absoluto Equilibrio</h1>
+        <p>¡Hola Manuel! Vamos a practicar el valor absoluto con 25 retos divertidos.</p>
+        <button class="btn-accion" onclick="comenzarApp()">¡Empezar ahora!</button>
+    </div>
+
+    <div id="pantalla-juego" class="hidden">
+        <div class="progreso">Pregunta <span id="num-pregunta">1</span> de 25</div>
+        <div id="enunciado" style="font-weight: 600;">¿Cuál es el valor de la expresión?</div>
+        <div id="ejercicio-math" class="math-box"></div>
+        
+        <div id="opciones" class="opciones-grid"></div>
+
+        <div id="feedback" class="feedback-area">
+            <div id="feedback-texto"></div>
+            <div id="desarrollo" class="paso-a-paso hidden"></div>
+            <button id="btn-siguiente" class="btn-accion" onclick="siguientePregunta()">Siguiente Reto</button>
+        </div>
+    </div>
+
+    <div id="pantalla-final" class="hidden">
+        <h1>¡Desafío Completado!</h1>
+        <div id="resumen-puntos" style="font-size: 1.5rem; margin: 20px 0;"></div>
+        <p id="mensaje-final"></p>
+        <button class="btn-accion" onclick="comenzarApp()">Reiniciar (20 retos nuevos)</button>
+        <button class="btn-accion" style="background:#6c757d" onclick="location.reload()">Finalizar</button>
+    </div>
+</div>
+
+<script>
+    let estado = {
+        preguntaActual: 0,
+        totalPreguntas: 25,
+        aciertos: 0,
+        ejercicios: [],
+        respondido: false
+    };
+
+    function generarEjercicios(cantidad) {
+        let tipos = ['basico', 'negativo', 'operacion', 'comparacion', 'ecuacion'];
+        let lista = [];
+        for (let i = 0; i < cantidad; i++) {
+            let tipo = tipos[Math.floor(Math.random() * tipos.length)];
+            lista.push(crearEjercicio(tipo));
+        }
+        return lista;
+    }
+
+    function crearEjercicio(tipo) {
+        let n1 = Math.floor(Math.random() * 50) + 1;
+        let n2 = Math.floor(Math.random() * 20) + 1;
+        
+        switch(tipo) {
+            case 'basico':
+                return {
+                    html: `<div class="abs">${n1}</div>`,
+                    ans: n1,
+                    alts: [n1, -n1, 0],
+                    desc: `El valor absoluto de un número positivo es el mismo número. Representa la distancia al cero.`
+                };
+            case 'negativo':
+                return {
+                    html: `<div class="abs">-${n1}</div>`,
+                    ans: n1,
+                    alts: [n1, -n1, 0],
+                    desc: `|-${n1}| = ${n1}. El valor absoluto siempre convierte el número en su valor positivo, ya que las distancias no pueden ser negativas.`
+                };
+            case 'operacion':
+                let resOp = n1 + n2;
+                return {
+                    html: `<div class="abs">-${n1}</div> + <div class="abs">${n2}</div>`,
+                    ans: resOp,
+                    alts: [resOp, n1 - n2, -(n1 + n2)],
+                    desc: `1. Calculamos |-${n1}| = ${n1}<br>2. Calculamos |${n2}| = ${n2}<br>3. Sumamos: ${n1} + ${n2} = ${resOp}`
+                };
+            case 'comparacion':
+                let n3 = n1 + 5;
+                return {
+                    html: `¿Es |-${n3}| > |${n1}|?`,
+                    ans: 'Verdadero',
+                    alts: ['Verdadero', 'Falso', 'Son iguales'],
+                    desc: `|-${n3}| es ${n3} y |${n1}| es ${n1}. Como ${n3} es mayor que ${n1}, la afirmación es verdadera.`
+                };
+            case 'ecuacion':
+                let x_final = Math.floor(Math.random() * 15) + 1;
+                let constante = Math.floor(Math.random() * 10) + 1;
+                let total = x_final + constante;
+                return {
+                    html: `<div class="abs">x</div> + ${constante} = ${total}`,
+                    ans: x_final,
+                    alts: [x_final, total, constante],
+                    desc: `Para despejar x:<br>1. Restamos ${constante} a ambos lados: |x| = ${total} - ${constante}<br>2. |x| = ${x_final}<br>3. Por lo tanto, x puede ser ${x_final}.`
+                };
+        }
+    }
+
+    function comenzarApp() {
+        estado.aciertos = 0;
+        estado.preguntaActual = 0;
+        estado.ejercicios = generarEjercicios(estado.totalPreguntas);
+        
+        document.getElementById('pantalla-inicio').classList.add('hidden');
+        document.getElementById('pantalla-final').classList.add('hidden');
+        document.getElementById('pantalla-juego').classList.remove('hidden');
+        mostrarPregunta();
+    }
+
+    function mostrarPregunta() {
+        estado.respondido = false;
+        let ex = estado.ejercicios[estado.preguntaActual];
+        
+        document.getElementById('num-pregunta').innerText = estado.preguntaActual + 1;
+        document.getElementById('ejercicio-math').innerHTML = ex.html;
+        document.getElementById('feedback').style.display = 'none';
+        document.getElementById('desarrollo').classList.add('hidden');
+        
+        let opcionesArea = document.getElementById('opciones');
+        opcionesArea.innerHTML = '';
+        
+        // Mezclar alternativas
+        let alts = [...ex.alts].sort(() => Math.random() - 0.5);
+        
+        alts.forEach(a => {
+            let btn = document.createElement('button');
+            btn.className = 'btn-alternativa';
+            btn.innerText = a;
+            btn.onclick = () => verificarRespuesta(a, btn);
+            opcionesArea.appendChild(btn);
+        });
+    }
+
+    function verificarRespuesta(elegida, boton) {
+        if (estado.respondido) return;
+        estado.respondido = true;
+        
+        let ex = estado.ejercicios[estado.preguntaActual];
+        let feed = document.getElementById('feedback');
+        let feedTexto = document.getElementById('feedback-texto');
+        let desarrollo = document.getElementById('desarrollo');
+        
+        feed.style.display = 'block';
+        
+        if (elegida === ex.ans) {
+            estado.aciertos++;
+            boton.classList.add('correcta');
+            feedTexto.innerHTML = `<span style="color:var(--verde-exito); font-size:1.2rem;">✨ ¡Excelente Manuel! Muy bien.</span>`;
+        } else {
+            boton.classList.add('incorrecta');
+            feedTexto.innerHTML = `<span style="color:var(--rojo-error); font-size:1.2rem;">😅 ¡Casi! Vamos a revisar:</span>`;
+            desarrollo.innerHTML = `<strong>Explicación:</strong><br>${ex.desc}`;
+            desarrollo.classList.remove('hidden');
+        }
+    }
+
+    function siguientePregunta() {
+        estado.preguntaActual++;
+        if (estado.preguntaActual < estado.totalPreguntas) {
+            mostrarPregunta();
+        } else {
+            finalizarJuego();
+        }
+    }
+
+    function finalizarJuego() {
+        document.getElementById('pantalla-juego').classList.add('hidden');
+        document.getElementById('pantalla-final').classList.remove('hidden');
+        
+        let porcentaje = (estado.aciertos / estado.totalPreguntas) * 100;
+        document.getElementById('resumen-puntos').innerText = `Puntaje: ${estado.aciertos} / ${estado.totalPreguntas}`;
+        
+        let msg = "";
+        if (porcentaje === 100) msg = "¡Increíble Manuel! Eres un maestro del valor absoluto. 🏆";
+        else if (porcentaje >= 70) msg = "¡Muy buen trabajo! Has dominado la mayoría de los ejercicios. 👏";
+        else msg = "¡Buen esfuerzo! Sigue practicando para ser el mejor. 💪";
+        
+        document.getElementById('mensaje-final').innerText = msg;
+        // Cambiar modo para el reinicio solicitado (20 ejercicios)
+        estado.totalPreguntas = 20;
+    }
+</script>
+
+</body>
+</html>
